@@ -38,6 +38,10 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("Multiplier applied to dash duration while rage is active (higher = longer dash time)")] private float rageDashDurationMultiplier = 1.2f;
     [SerializeField, Tooltip("Animator state name used for rage idle (optional)")] private string rageIdleStateName = "rageidle";
     [SerializeField, Tooltip("Animator state name used for rage run (optional)")] private string rageRunStateName = "ragerun";
+    [SerializeField, Tooltip("Animator state name used for rage jump (optional)")] private string rageJumpStateName = "ragejump";
+    [SerializeField, Tooltip("Animator state name used for rage dash (optional)")] private string rageDashStateName = "ragedash";
+    [SerializeField, Tooltip("Animator state name used when the player gets hit during rage (optional)")] private string rageHeavyDamageStateName = "rageheavydamage";
+    [SerializeField, Tooltip("Optional animator trigger for rage heavy-damage reactions (uses state fallback when missing)")] private string rageHeavyDamageTriggerParam = "OnHitRageHeavyDamage";
 
     [Header("Audio")]
     [SerializeField, Tooltip("AudioSource for playing skill sounds")] private AudioSource audioSource;
@@ -94,6 +98,18 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("Radius used to detect enemies for Skill1 hit")] private float skill1HitRadius = 0.8f;
     [SerializeField, Tooltip("Offset from player pivot where Skill1 is centered (local space)")] private Vector2 skill1HitOffset = new Vector2(0.6f, 0f);
 
+    [Header("Rage Heavy Damage Combat")]
+    [SerializeField, Tooltip("Base damage dealt by rage heavy-damage hit. Runtime enforces this stays above Skill1 damage.")]
+    private int rageHeavyDamageDamage = 25;
+    [SerializeField, Tooltip("Chance (0..1) for rage heavy-damage to crit")]
+    private float rageHeavyDamageCritChance = 0.15f;
+    [SerializeField, Tooltip("Critical damage multiplier for rage heavy-damage")]
+    private float rageHeavyDamageCritMultiplier = 1.75f;
+    [SerializeField, Tooltip("Radius used to detect enemies for rage heavy-damage")]
+    private float rageHeavyDamageHitRadius = 1.0f;
+    [SerializeField, Tooltip("Offset from player pivot where rage heavy-damage is centered (local space)")]
+    private Vector2 rageHeavyDamageHitOffset = new Vector2(0.7f, 0f);
+
     [Header("Damage Popup")]
     [SerializeField, Tooltip("Prefab used to display floating damage text (optional)")] private DamagePopup damagePopupPrefab;
     [SerializeField, Tooltip("Base world-space offset from player for popup text (positive x is in front of player)")] private Vector3 damagePopupOffset = new Vector3(0.15f, 0.65f, 0f);
@@ -108,6 +124,14 @@ public class Player : MonoBehaviour
     [Header("Attack Fallback")]
     [SerializeField, Tooltip("Automatically apply hit if animation event is missing")] private bool autoApplyAttack = true;
     [SerializeField, Tooltip("Delay (seconds) before auto-applying hit if animation event is missing")] private float attackHitDelay = 0.15f;
+
+    [Header("Rage Heavy Damage Input")]
+    [SerializeField, Tooltip("Key used to apply heavy-damage to the player while raging")]
+    private KeyCode rageHeavyDamageKey = KeyCode.R;
+    [SerializeField, Tooltip("How much HP is lost when the rage heavy-damage key is pressed")]
+    private int rageHeavyDamageAmount = 1;
+    [SerializeField, Tooltip("Minimum seconds between rage heavy-damage reaction triggers to avoid animation loops")]
+    private float rageHeavyDamageReactionCooldown = 0.35f;
 
     // runtime attack hit state
     private bool attackHitApplied = false;
@@ -199,11 +223,15 @@ public class Player : MonoBehaviour
     private bool animHasDashTrigger;
     private bool animHasRageStartTrigger;
     private bool animHasRageBool;
+    private bool animHasRageHeavyDamageTrigger;
 
     private bool isRaging;
     private bool rageEntryPlaying; // lock movement during initial ragemode animation
     private float rageUntilTime = -Mathf.Infinity;
     private Coroutine rageCoroutine;
+    private Coroutine rageHeavyDamageRecoverRoutine;
+    private bool rageHeavyDamageInProgress;
+    private float lastRageHeavyDamageReactionTime = -Mathf.Infinity;
 
     public bool IsAttacking => isAttacking;
     public bool IsDashing => isDashing;
@@ -397,8 +425,16 @@ public class Player : MonoBehaviour
         // Cache components used by trail / visuals
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerHealth = GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+            playerHealth.onHit.AddListener(OnHitRageHeavyDamage);
 
         CacheAnimatorParameters();
+    }
+
+    void OnDestroy()
+    {
+        if (playerHealth != null)
+            playerHealth.onHit.RemoveListener(OnHitRageHeavyDamage);
     }
 
 #if UNITY_EDITOR
@@ -438,6 +474,7 @@ public class Player : MonoBehaviour
         HandleAttackInput();
         HandleSkillInput();
         HandleDashInput();
+        HandleRageHeavyDamageInput();
         HandleSpriteFlip();
         UpdateFootsteps();
 
@@ -512,6 +549,21 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void HandleRageHeavyDamageInput()
+    {
+        if (!isRaging || playerHealth == null) return;
+
+#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+        bool heavyDamageRequested = Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame;
+#else
+        bool heavyDamageRequested = Input.GetKeyDown(rageHeavyDamageKey);
+#endif
+        if (!heavyDamageRequested) return;
+
+        // Apply real damage first; PlayerHealth.onHit then drives the rage heavy-damage animation reaction.
+        playerHealth.TakeDamage(Mathf.Max(1, rageHeavyDamageAmount), true);
+    }
+
     private void HandleSkillInput()
     {
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
@@ -580,7 +632,12 @@ public class Player : MonoBehaviour
         lastDashTime = Time.time;
         if (playerHealth != null) playerHealth.SetDashInvulnerable(true);
         if (animator != null && animHasDashTrigger)
-            animator.SetTrigger(dashTrigger);
+        {
+            if (isRaging && !string.IsNullOrEmpty(rageDashStateName))
+                animator.Play(rageDashStateName, 0, 0f);
+            else
+                animator.SetTrigger(dashTrigger);
+        }
 
         // Optionally ignore collisions with enemy layers while dashing (track them so we can restore on cancel)
         currentlyIgnoredEnemyLayers = null;
@@ -632,11 +689,7 @@ public class Player : MonoBehaviour
         if (playerHealth != null) playerHealth.SetDashInvulnerable(false);
 
         if (isRaging && animator != null)
-        {
-            string target = Mathf.Abs(horizontal) > 0.1f ? rageRunStateName : rageIdleStateName;
-            if (!string.IsNullOrEmpty(target))
-                animator.Play(target, 0, 0f);
-        }
+            PlayRageLocomotionState();
 
         // Restore previously ignored layers
         if (currentlyIgnoredEnemyLayers != null)
@@ -777,8 +830,13 @@ public class Player : MonoBehaviour
         v.y = 0f; // reset vertical velocity for consistent jumps
         rb.linearVelocity = v;
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-        if (animator != null && animHasJumpTrigger)
-            animator.SetTrigger(jumpTrigger);
+        if (animator != null)
+        {
+            if (isRaging && !string.IsNullOrEmpty(rageJumpStateName))
+                animator.Play(rageJumpStateName, 0, 0f);
+            else if (animHasJumpTrigger)
+                animator.SetTrigger(jumpTrigger);
+        }
     }
 
     [ContextMenu("Force Jump (Editor)")]
@@ -797,6 +855,7 @@ public class Player : MonoBehaviour
         animHasDashTrigger = !string.IsNullOrEmpty(dashTrigger) && AnimatorHasParameter(dashTrigger);
         animHasRageStartTrigger = !string.IsNullOrEmpty(rageStartTriggerParam) && AnimatorHasParameter(rageStartTriggerParam);
         animHasRageBool = !string.IsNullOrEmpty(rageBoolParam) && AnimatorHasParameter(rageBoolParam);
+        animHasRageHeavyDamageTrigger = !string.IsNullOrEmpty(rageHeavyDamageTriggerParam) && AnimatorHasParameter(rageHeavyDamageTriggerParam);
     }
 
     private void SetRageAnimatorState(bool value)
@@ -860,6 +919,32 @@ public class Player : MonoBehaviour
         return skill1HitRadius * m;
     }
 
+    private int GetEffectiveRageHeavyDamage()
+    {
+        int effectiveSkill1 = GetEffectiveSkill1Damage();
+        int baseHeavy = Mathf.Max(1, rageHeavyDamageDamage);
+        // Guarantee heavy damage is always stronger than Skill1 by at least 1.
+        return Mathf.Max(baseHeavy, effectiveSkill1 + 1);
+    }
+
+    private float GetEffectiveRageHeavyDamageCritChance()
+    {
+        float m = isRaging ? Mathf.Max(0f, rageCritChanceMultiplier) : 1f;
+        return Mathf.Clamp01(rageHeavyDamageCritChance * m);
+    }
+
+    private float GetEffectiveRageHeavyDamageCritMultiplier()
+    {
+        float m = isRaging ? Mathf.Max(0f, rageCritMultiplierMultiplier) : 1f;
+        return Mathf.Max(1f, rageHeavyDamageCritMultiplier * m);
+    }
+
+    private float GetEffectiveRageHeavyDamageHitRadius()
+    {
+        float m = isRaging ? Mathf.Max(0f, rageSkill1HitRadiusMultiplier) : 1f;
+        return rageHeavyDamageHitRadius * m;
+    }
+
     // Spawn a floating damage text near the player only (world-space),
     // with a random offset in a circle around the hero.
     private void SpawnDamagePopup(string message, Color color)
@@ -915,6 +1000,21 @@ public class Player : MonoBehaviour
             animator.SetFloat(speedParam, Mathf.Abs(rb.linearVelocity.x), speedDampTime, Time.deltaTime);
         if (animHasGroundedBool)
             animator.SetBool(groundedParam, isGrounded);
+
+        if (isRaging && isGrounded)
+        {
+            var st = animator.GetCurrentAnimatorStateInfo(0);
+            if (st.IsName(rageJumpStateName))
+                PlayRageLocomotionState();
+        }
+    }
+
+    private void PlayRageLocomotionState()
+    {
+        if (animator == null) return;
+        string target = Mathf.Abs(horizontal) > 0.1f ? rageRunStateName : rageIdleStateName;
+        if (!string.IsNullOrEmpty(target))
+            animator.Play(target, 0, 0f);
     }
 
     private void HandleSpriteFlip()
@@ -1218,6 +1318,41 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void ApplyRageHeavyDamageToEnemies()
+    {
+        float radius = GetEffectiveRageHeavyDamageHitRadius();
+        if (radius <= 0f) return;
+
+        float dir = Mathf.Sign(transform.localScale.x == 0 ? 1f : transform.localScale.x);
+        Vector2 center = (Vector2)transform.position + new Vector2(rageHeavyDamageHitOffset.x * dir, rageHeavyDamageHitOffset.y);
+
+        Collider2D[] cols = Physics2D.OverlapCircleAll(center, radius, enemyLayer);
+        var hitSet = new System.Collections.Generic.HashSet<Enemy>();
+
+        foreach (var c in cols)
+        {
+            if (c == null) continue;
+            var e = c.GetComponentInParent<Enemy>();
+            if (e == null || hitSet.Contains(e)) continue;
+            hitSet.Add(e);
+
+            if (IsBlinded() && Random.value < blindChance)
+            {
+                SpawnDamagePopup("Miss", missPopupColor);
+                continue;
+            }
+
+            float critChance = GetEffectiveRageHeavyDamageCritChance();
+            float critMult = GetEffectiveRageHeavyDamageCritMultiplier();
+            bool isCrit = (critChance > 0f && Random.value < critChance) && e.CanBeCrit;
+
+            int dmg = GetEffectiveRageHeavyDamage();
+            if (isCrit) dmg = Mathf.Max(1, Mathf.RoundToInt(dmg * critMult));
+            e.TakeDamage(dmg);
+            SpawnDamagePopup(dmg.ToString(), isCrit ? critPopupColor : damagePopupColor);
+        }
+    }
+
     public void EndAttack()
     {
 
@@ -1240,6 +1375,68 @@ public class Player : MonoBehaviour
         ApplySkill1ToEnemies();
 
         onSkill1Hit?.Invoke();
+    }
+
+    // Similar to OnSkill1Hit flow, but used for incoming-hit reaction during rage.
+    public void OnHitRageHeavyDamage()
+    {
+        if (!isRaging || rageEntryPlaying) return;
+        if (isDashing || isAttacking) return;
+        if (playerHealth != null && playerHealth.IsDead()) return;
+        if (animator == null) return;
+
+        if (Time.time < lastRageHeavyDamageReactionTime + Mathf.Max(0f, rageHeavyDamageReactionCooldown))
+            return;
+
+        if (rageHeavyDamageInProgress)
+        {
+            var current = animator.GetCurrentAnimatorStateInfo(0);
+            if (current.IsName(rageHeavyDamageStateName))
+                return;
+        }
+
+        rageHeavyDamageInProgress = true;
+        lastRageHeavyDamageReactionTime = Time.time;
+
+        if (rageHeavyDamageRecoverRoutine != null)
+        {
+            StopCoroutine(rageHeavyDamageRecoverRoutine);
+            rageHeavyDamageRecoverRoutine = null;
+        }
+
+        if (animHasRageHeavyDamageTrigger)
+        {
+            animator.ResetTrigger(rageHeavyDamageTriggerParam);
+            animator.SetTrigger(rageHeavyDamageTriggerParam);
+        }
+        else if (!string.IsNullOrEmpty(rageHeavyDamageStateName))
+            animator.Play(rageHeavyDamageStateName, 0, 0f);
+
+        // Apply outgoing AoE damage when this heavy-damage reaction is triggered.
+        ApplyRageHeavyDamageToEnemies();
+
+        rageHeavyDamageRecoverRoutine = StartCoroutine(RageHeavyDamageRecoverRoutine());
+    }
+
+    private IEnumerator RageHeavyDamageRecoverRoutine()
+    {
+        float timeout = 2f;
+        float elapsed = 0f;
+
+        while (animator != null && elapsed < timeout)
+        {
+            var st = animator.GetCurrentAnimatorStateInfo(0);
+            if (st.IsName(rageHeavyDamageStateName) && st.normalizedTime >= 1f)
+                break;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        rageHeavyDamageRecoverRoutine = null;
+        rageHeavyDamageInProgress = false;
+        if (isRaging)
+            PlayRageLocomotionState();
     }
 
     public void EndSkill1()
