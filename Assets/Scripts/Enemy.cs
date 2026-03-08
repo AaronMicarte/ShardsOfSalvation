@@ -156,6 +156,14 @@ public class Enemy : MonoBehaviour
     [SerializeField, Tooltip("Optional spawner to use. If left empty, no reinforcements will spawn.")] private ReinforcementSpawner reinforcementSpawner = null;
     [SerializeField, Tooltip("If true, logs reinforcement spawn decisions to the Console for debugging.")] private bool reinforcementDebug = false;
 
+    [Header("Loot - Shard Drop")]
+    [SerializeField, Tooltip("If true, spawn a shard pickup when this enemy dies (enable this on boss only).")]
+    private bool dropShardOnDeath = false;
+    [SerializeField, Tooltip("Prefab to spawn for the shard pickup (should have ShardPickup component).")]
+    private GameObject shardPickupPrefab = null;
+    [SerializeField, Tooltip("Extra offset from the enemy's right edge where the shard spawns. +X is world-right.")]
+    private Vector2 shardDropOffset = new Vector2(0.35f, 0f);
+
     [Header("Ranged")]
     [SerializeField, Tooltip("Projectile prefab to spawn for ranged attacks (assign Arrow Projectile prefab)")] private GameObject rangedProjectilePrefab = null;
     [SerializeField, Tooltip("Spawn transform (child) where projectiles originate")] private Transform projectileSpawnPoint = null;
@@ -200,6 +208,8 @@ public class Enemy : MonoBehaviour
 
     // reinforcement spawn guard (avoid double spawn when death animation waits)
     private bool reinforcementSpawned = false;
+    // shard drop guard (avoid duplicate drop from multiple cleanup paths)
+    private bool shardDropSpawned = false;
 
     void Start()
     {
@@ -1419,6 +1429,9 @@ public class Enemy : MonoBehaviour
         if (deathClip != null && !deathSfxViaAnimationEvents)
             AudioSource.PlayClipAtPoint(deathClip, transform.position, deathVolume);
 
+        // Spawn shard drop once on death (boss use-case).
+        TryDropShardOnDeath("DoDeathCleanup()");
+
         // Try to spawn reinforcements (if configured and a spawner is assigned)
         TrySpawnReinforcements("DoDeathCleanup()");
 
@@ -1465,6 +1478,30 @@ public class Enemy : MonoBehaviour
         if (reinforcementDebug) Debug.Log($"Enemy '{name}' spawning reinforcements x{reinforcementCount} ({context}).");
         // pass 1f so the spawner won't re-roll chance (we already did it here)
         reinforcementSpawner.TrySpawnAt(transform.position, reinforcementCount, 1f, reinforcementDelay);
+    }
+
+    private void TryDropShardOnDeath(string context)
+    {
+        if (shardDropSpawned) return;
+        if (!dropShardOnDeath) return;
+
+        if (shardPickupPrefab == null)
+        {
+            Debug.LogWarning($"Enemy '{name}' shard drop skipped: shardPickupPrefab is null ({context}).");
+            return;
+        }
+
+        float rightExtent = 0f;
+        var renderers = GetComponentsInChildren<SpriteRenderer>();
+        foreach (var sr in renderers)
+        {
+            if (sr == null) continue;
+            rightExtent = Mathf.Max(rightExtent, sr.bounds.max.x - transform.position.x);
+        }
+
+        Vector3 spawnPos = transform.position + new Vector3(rightExtent + Mathf.Abs(shardDropOffset.x), shardDropOffset.y, 0f);
+        Instantiate(shardPickupPrefab, spawnPos, Quaternion.identity);
+        shardDropSpawned = true;
     }
 
     private float NormalizeChance01(float chance)

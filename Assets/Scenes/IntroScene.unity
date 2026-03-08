@@ -156,10 +156,10 @@ MonoBehaviour:
   - text: "Alright\u2026 normal day at school. Students, teachers, loud MS ground\u2026
       same old stuff."
     background: {fileID: -8541978227900290211, guid: d6527a09676edf34390a26807743864b, type: 3}
-    portrait: {fileID: 21300000, guid: eda10d32c136b4141a704260b0e1b0c1, type: 3}
+    portrait: {fileID: -453598975847680082, guid: 1aad60f18d064cf4bbb168e562d89773, type: 3}
   - text: "I head to the CR real quick\u2026 nature calls, you know?"
     background: {fileID: -8541978227900290211, guid: d6527a09676edf34390a26807743864b, type: 3}
-    portrait: {fileID: 21300000, guid: eda10d32c136b4141a704260b0e1b0c1, type: 3}
+    portrait: {fileID: -7201862637797431860, guid: be43efce72e1e794a8ca00e6b4d19db6, type: 3}
   - text: "(Student steps out)\n\nWhat... Where is everybody?? I just pee.. Am I
       in another universe \n"
     background: {fileID: -8541978227900290211, guid: d6527a09676edf34390a26807743864b, type: 3}
