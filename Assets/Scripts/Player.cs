@@ -34,6 +34,7 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("Multiplier applied to crit chance while rage is active")] private float rageCritChanceMultiplier = 2f;
     [SerializeField, Tooltip("Multiplier applied to crit damage multiplier while rage is active")] private float rageCritMultiplierMultiplier = 2f;
     [SerializeField, Tooltip("Multiplier applied to Skill1 hit radius while rage is active")] private float rageSkill1HitRadiusMultiplier = 2f;
+    [SerializeField, Tooltip("Multiplier applied to Skill1 forward hit range (offset X) while rage is active")] private float rageSkill1RangeMultiplier = 2.2f;
     [SerializeField, Tooltip("Multiplier applied to dash distance while rage is active")] private float rageDashDistanceMultiplier = 1.4f;
     [SerializeField, Tooltip("Multiplier applied to dash duration while rage is active (higher = longer dash time)")] private float rageDashDurationMultiplier = 1.2f;
     [SerializeField, Tooltip("Animator state name used for rage idle (optional)")] private string rageIdleStateName = "rageidle";
@@ -128,8 +129,6 @@ public class Player : MonoBehaviour
     [Header("Rage Heavy Damage Input")]
     [SerializeField, Tooltip("Key used to apply heavy-damage to the player while raging")]
     private KeyCode rageHeavyDamageKey = KeyCode.R;
-    [SerializeField, Tooltip("How much HP is lost when the rage heavy-damage key is pressed")]
-    private int rageHeavyDamageAmount = 1;
     [SerializeField, Tooltip("Minimum seconds between rage heavy-damage reaction triggers to avoid animation loops")]
     private float rageHeavyDamageReactionCooldown = 0.35f;
 
@@ -426,7 +425,7 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerHealth = GetComponent<PlayerHealth>();
         if (playerHealth != null)
-            playerHealth.onHit.AddListener(OnHitRageHeavyDamage);
+            playerHealth.onHit.AddListener(TriggerRageHeavyDamageReaction);
 
         CacheAnimatorParameters();
     }
@@ -434,7 +433,7 @@ public class Player : MonoBehaviour
     void OnDestroy()
     {
         if (playerHealth != null)
-            playerHealth.onHit.RemoveListener(OnHitRageHeavyDamage);
+            playerHealth.onHit.RemoveListener(TriggerRageHeavyDamageReaction);
     }
 
 #if UNITY_EDITOR
@@ -551,7 +550,7 @@ public class Player : MonoBehaviour
 
     private void HandleRageHeavyDamageInput()
     {
-        if (!isRaging || playerHealth == null) return;
+        if (!isRaging) return;
 
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
         bool heavyDamageRequested = Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame;
@@ -560,8 +559,8 @@ public class Player : MonoBehaviour
 #endif
         if (!heavyDamageRequested) return;
 
-        // Apply real damage first; PlayerHealth.onHit then drives the rage heavy-damage animation reaction.
-        playerHealth.TakeDamage(Mathf.Max(1, rageHeavyDamageAmount), true);
+        // Manual trigger for testing/controls: does not damage the player.
+        TriggerRageHeavyDamageReaction();
     }
 
     private void HandleSkillInput()
@@ -917,6 +916,12 @@ public class Player : MonoBehaviour
     {
         float m = isRaging ? Mathf.Max(0f, rageSkill1HitRadiusMultiplier) : 1f;
         return skill1HitRadius * m;
+    }
+
+    private Vector2 GetEffectiveSkill1HitOffset()
+    {
+        float m = isRaging ? Mathf.Max(0f, rageSkill1RangeMultiplier) : 1f;
+        return new Vector2(skill1HitOffset.x * m, skill1HitOffset.y);
     }
 
     private int GetEffectiveRageHeavyDamage()
@@ -1289,7 +1294,8 @@ public class Player : MonoBehaviour
         if (effectiveSkill1Radius <= 0f) return;
 
         float dir = Mathf.Sign(transform.localScale.x == 0 ? 1f : transform.localScale.x);
-        Vector2 center = (Vector2)transform.position + new Vector2(skill1HitOffset.x * dir, skill1HitOffset.y);
+        Vector2 effectiveOffset = GetEffectiveSkill1HitOffset();
+        Vector2 center = (Vector2)transform.position + new Vector2(effectiveOffset.x * dir, effectiveOffset.y);
 
         Collider2D[] cols = Physics2D.OverlapCircleAll(center, effectiveSkill1Radius, enemyLayer);
 
@@ -1377,8 +1383,9 @@ public class Player : MonoBehaviour
         onSkill1Hit?.Invoke();
     }
 
-    // Similar to OnSkill1Hit flow, but used for incoming-hit reaction during rage.
-    public void OnHitRageHeavyDamage()
+    // Called when the player is hit during rage OR manually via input.
+    // This starts the reaction animation; actual outgoing damage is applied by animation event timing.
+    private void TriggerRageHeavyDamageReaction()
     {
         if (!isRaging || rageEntryPlaying) return;
         if (isDashing || isAttacking) return;
@@ -1412,10 +1419,17 @@ public class Player : MonoBehaviour
         else if (!string.IsNullOrEmpty(rageHeavyDamageStateName))
             animator.Play(rageHeavyDamageStateName, 0, 0f);
 
-        // Apply outgoing AoE damage when this heavy-damage reaction is triggered.
-        ApplyRageHeavyDamageToEnemies();
-
         rageHeavyDamageRecoverRoutine = StartCoroutine(RageHeavyDamageRecoverRoutine());
+    }
+
+    // Animation Event: place this on the exact frame where rage heavy-damage should hit.
+    public void OnHitRageHeavyDamage()
+    {
+        if (!isRaging || rageEntryPlaying) return;
+        if (!rageHeavyDamageInProgress) return;
+        if (playerHealth != null && playerHealth.IsDead()) return;
+
+        ApplyRageHeavyDamageToEnemies();
     }
 
     private IEnumerator RageHeavyDamageRecoverRoutine()

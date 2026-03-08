@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -3998174153082541255, guid: b3e7b5581f7a39b47b4de37e943160f4, type: 3}
+  m_Sprite: {fileID: 5993231112860516382, guid: dba07808ca1edc34bba0ed3524cd5eda, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1222,6 +1222,7 @@ MonoBehaviour:
   rageCritChanceMultiplier: 2
   rageCritMultiplierMultiplier: 2
   rageSkill1HitRadiusMultiplier: 2
+  rageSkill1RangeMultiplier: 2.2
   rageDashDistanceMultiplier: 1.4
   rageDashDurationMultiplier: 1.2
   rageIdleStateName: rageidle
@@ -1288,7 +1289,6 @@ MonoBehaviour:
   autoApplyAttack: 1
   attackHitDelay: 0.15
   rageHeavyDamageKey: 114
-  rageHeavyDamageAmount: 1
   rageHeavyDamageReactionCooldown: 0.35
   skill1Trigger: Skill1
   skill1Duration: 0.7
@@ -2808,6 +2808,9 @@ MonoBehaviour:
   reinforcementDelay: 0.15
   reinforcementSpawner: {fileID: 0}
   reinforcementDebug: 0
+  dropShardOnDeath: 0
+  shardPickupPrefab: {fileID: 0}
+  shardDropOffset: {x: 0.35, y: 0}
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0

@@ -823,7 +823,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -3998174153082541255, guid: b3e7b5581f7a39b47b4de37e943160f4, type: 3}
+  m_Sprite: {fileID: 5993231112860516382, guid: dba07808ca1edc34bba0ed3524cd5eda, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2402,6 +2402,9 @@ MonoBehaviour:
   reinforcementDelay: 0.15
   reinforcementSpawner: {fileID: 0}
   reinforcementDebug: 0
+  dropShardOnDeath: 0
+  shardPickupPrefab: {fileID: 0}
+  shardDropOffset: {x: 0.35, y: 0}
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0
@@ -3441,6 +3444,9 @@ MonoBehaviour:
   reinforcementDelay: 0.15
   reinforcementSpawner: {fileID: 0}
   reinforcementDebug: 0
+  dropShardOnDeath: 0
+  shardPickupPrefab: {fileID: 0}
+  shardDropOffset: {x: 0.35, y: 0}
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0
@@ -3859,6 +3865,9 @@ MonoBehaviour:
   reinforcementDelay: 0.15
   reinforcementSpawner: {fileID: 0}
   reinforcementDebug: 0
+  dropShardOnDeath: 0
+  shardPickupPrefab: {fileID: 0}
+  shardDropOffset: {x: 0.35, y: 0}
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0
@@ -5042,6 +5051,9 @@ MonoBehaviour:
   reinforcementDelay: 0.15
   reinforcementSpawner: {fileID: 0}
   reinforcementDebug: 0
+  dropShardOnDeath: 0
+  shardPickupPrefab: {fileID: 0}
+  shardDropOffset: {x: 0.35, y: 0}
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0
@@ -7033,6 +7045,9 @@ MonoBehaviour:
   reinforcementDelay: 0.15
   reinforcementSpawner: {fileID: 0}
   reinforcementDebug: 0
+  dropShardOnDeath: 0
+  shardPickupPrefab: {fileID: 0}
+  shardDropOffset: {x: 0.35, y: 0}
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0
@@ -7492,6 +7507,9 @@ MonoBehaviour:
   reinforcementDelay: 0.15
   reinforcementSpawner: {fileID: 0}
   reinforcementDebug: 0
+  dropShardOnDeath: 0
+  shardPickupPrefab: {fileID: 0}
+  shardDropOffset: {x: 0.35, y: 0}
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0
@@ -8079,10 +8097,15 @@ MonoBehaviour:
   rageCritChanceMultiplier: 2
   rageCritMultiplierMultiplier: 2
   rageSkill1HitRadiusMultiplier: 2
+  rageSkill1RangeMultiplier: 2.2
   rageDashDistanceMultiplier: 1.4
   rageDashDurationMultiplier: 1.2
   rageIdleStateName: rageidle
   rageRunStateName: ragerun
+  rageJumpStateName: ragejump
+  rageDashStateName: ragedash
+  rageHeavyDamageStateName: rageheavydamage
+  rageHeavyDamageTriggerParam: OnHitRageHeavyDamage
   audioSource: {fileID: 2090439748}
   skill1Clip: {fileID: 8300000, guid: a3310607f141cce418ba956e6916d949, type: 3}
   attackClip: {fileID: 8300000, guid: ae05ee10da6b503419769ff59c3e32f6, type: 3}
@@ -8125,6 +8148,11 @@ MonoBehaviour:
   skill1CritMultiplier: 0.7
   skill1HitRadius: 0.8
   skill1HitOffset: {x: 0.6, y: 0}
+  rageHeavyDamageDamage: 25
+  rageHeavyDamageCritChance: 0.15
+  rageHeavyDamageCritMultiplier: 1.75
+  rageHeavyDamageHitRadius: 1
+  rageHeavyDamageHitOffset: {x: 0.7, y: 0}
   damagePopupPrefab: {fileID: 5486348128603047901, guid: 2772f113c78f9c3448cc6e34708c6815, type: 3}
   damagePopupOffset: {x: 0.15, y: 0.65, z: 0}
   damagePopupRandomRange: {x: 0.08, y: 0.08}
@@ -8135,6 +8163,8 @@ MonoBehaviour:
   percentPopupColor: {r: 1, g: 1, b: 1, a: 1}
   autoApplyAttack: 1
   attackHitDelay: 0.15
+  rageHeavyDamageKey: 114
+  rageHeavyDamageReactionCooldown: 0.35
   skill1Trigger: Skill1
   skill1Duration: 0.7
   skill1Cooldown: 2.5
