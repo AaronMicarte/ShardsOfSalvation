@@ -11,7 +11,7 @@ public class ShardPickup : MonoBehaviour
 
     [Header("Spawn Motion (No Animator Needed)")]
     [SerializeField, Tooltip("If enabled, shard pops up then settles down when spawned.")] private bool playSpawnMotion = true;
-    [SerializeField, Tooltip("How high the shard moves upward before dropping back.")] private float spawnPopHeight = 0.45f;
+    [SerializeField, Tooltip("How high the shard moves upward before dropping back.")] private float spawnPopHeight = 0.75f;
     [SerializeField, Tooltip("Seconds for the upward part of the spawn motion.")] private float spawnPopDuration = 0.12f;
     [SerializeField, Tooltip("Seconds for the downward part of the spawn motion.")] private float spawnDropDuration = 0.18f;
     [SerializeField, Tooltip("Delay before the shard can be picked up after spawning.")] private float pickupEnableDelay = 0.08f;
