@@ -3056,7 +3056,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.12, y: 0.2}
+    oldSize: {x: 0.63, y: 1.06}
     newSize: {x: 0.12, y: 0.2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -3135,7 +3135,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -3998174153082541255, guid: b3e7b5581f7a39b47b4de37e943160f4, type: 3}
+  m_Sprite: {fileID: -5005990984189769374, guid: b562de6f05f9d3243a467416e2806040, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3154,8 +3154,8 @@ Transform:
   m_GameObject: {fileID: 820874181}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 37.41, y: -1.44, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 1}
+  m_LocalPosition: {x: 37.73, y: -5.75, z: 0}
+  m_LocalScale: {x: 0.66, y: 0.66, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -3865,9 +3865,9 @@ MonoBehaviour:
   reinforcementDelay: 0.15
   reinforcementSpawner: {fileID: 0}
   reinforcementDebug: 0
-  dropShardOnDeath: 0
-  shardPickupPrefab: {fileID: 0}
-  shardDropOffset: {x: 0.35, y: 0}
+  dropShardOnDeath: 1
+  shardPickupPrefab: {fileID: 820874181}
+  shardDropOffset: {x: 0.1, y: 0}
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0
@@ -7710,6 +7710,9 @@ MonoBehaviour:
   messageText: {fileID: 777708659}
   messageDuration: 2
   areaCollider: {fileID: 0}
+  requireShardPickup: 1
+  requiredShardCount: 1
+  missingShardMessage: Can't enter portal - pick up the shard first
 --- !u!61 &2039357735
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -8434,9 +8437,9 @@ SceneRoots:
   - {fileID: 2039357738}
   - {fileID: 1635089395}
   - {fileID: 312958808}
-  - {fileID: 1526840612}
   - {fileID: 778364256}
   - {fileID: 1614976724}
+  - {fileID: 1526840612}
   - {fileID: 779166932}
   - {fileID: 1683320195}
   - {fileID: 951741171}

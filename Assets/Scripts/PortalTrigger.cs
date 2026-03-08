@@ -18,6 +18,13 @@ public class PortalTrigger : MonoBehaviour
     [Tooltip("If assigned, only enemies inside this Collider2D will be considered (useful for per-stage checks)")]
     [SerializeField] private Collider2D areaCollider;
 
+    [Header("Shard Requirement")]
+    [Tooltip("If true, player must collect enough shards before this portal can be used")]
+    [SerializeField] private bool requireShardPickup = true;
+    [Tooltip("Minimum shards required to enter this portal")]
+    [SerializeField] private int requiredShardCount = 1;
+    [SerializeField] private string missingShardMessage = "Can't enter portal - pick up the shard first";
+
     private Coroutine messageCoroutine;
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -27,6 +34,12 @@ public class PortalTrigger : MonoBehaviour
         if (AreEnemiesRemaining())
         {
             ShowMessage("Can't enter portal — enemies remain");
+            return;
+        }
+
+        if (!HasRequiredShards())
+        {
+            ShowMessage(missingShardMessage);
             return;
         }
 
@@ -106,5 +119,19 @@ public class PortalTrigger : MonoBehaviour
                 return;
             }
         }
+    }
+
+    private bool HasRequiredShards()
+    {
+        if (!requireShardPickup) return true;
+
+        int needed = Mathf.Max(1, requiredShardCount);
+        if (ShardManager.Instance == null)
+        {
+            Debug.LogWarning("PortalTrigger: ShardManager not found; portal entry blocked by shard requirement.");
+            return false;
+        }
+
+        return ShardManager.Instance.ShardCount >= needed;
     }
 }

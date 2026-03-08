@@ -1294,13 +1294,34 @@ public class Player : MonoBehaviour
         if (effectiveSkill1Radius <= 0f) return;
 
         float dir = Mathf.Sign(transform.localScale.x == 0 ? 1f : transform.localScale.x);
+        Vector2 baseOffset = skill1HitOffset;
         Vector2 effectiveOffset = GetEffectiveSkill1HitOffset();
-        Vector2 center = (Vector2)transform.position + new Vector2(effectiveOffset.x * dir, effectiveOffset.y);
+        Vector2 startCenter = (Vector2)transform.position + new Vector2(baseOffset.x * dir, baseOffset.y);
+        Vector2 endCenter = (Vector2)transform.position + new Vector2(effectiveOffset.x * dir, effectiveOffset.y);
 
-        Collider2D[] cols = Physics2D.OverlapCircleAll(center, effectiveSkill1Radius, enemyLayer);
+        var hitColliders = new System.Collections.Generic.HashSet<Collider2D>();
+
+        // Always include the endpoint impact zone.
+        Collider2D[] endCols = Physics2D.OverlapCircleAll(endCenter, effectiveSkill1Radius, enemyLayer);
+        foreach (var c in endCols)
+            if (c != null) hitColliders.Add(c);
+
+        // Rage Skill1 gets longer forward range; sweep the full segment so targets in the path are also hit.
+        Vector2 delta = endCenter - startCenter;
+        float sweepDistance = delta.magnitude;
+        if (sweepDistance > 0.001f)
+        {
+            Collider2D[] startCols = Physics2D.OverlapCircleAll(startCenter, effectiveSkill1Radius, enemyLayer);
+            foreach (var c in startCols)
+                if (c != null) hitColliders.Add(c);
+
+            RaycastHit2D[] sweepHits = Physics2D.CircleCastAll(startCenter, effectiveSkill1Radius, delta.normalized, sweepDistance, enemyLayer);
+            foreach (var h in sweepHits)
+                if (h.collider != null) hitColliders.Add(h.collider);
+        }
 
         var hitSet = new System.Collections.Generic.HashSet<Enemy>();
-        foreach (var c in cols)
+        foreach (var c in hitColliders)
         {
             if (c == null) continue;
             var e = c.GetComponentInParent<Enemy>();
