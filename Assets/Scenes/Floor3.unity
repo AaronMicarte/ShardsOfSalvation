@@ -1275,7 +1275,7 @@ MonoBehaviour:
   skill1HitOffset: {x: 0.6, y: 0}
   rageHeavyDamageDamage: 25
   rageHeavyDamageCritChance: 0.15
-  rageHeavyDamageCritMultiplier: 1.75
+  rageHeavyDamageCritMultiplier: 0.8
   rageHeavyDamageHitRadius: 1
   rageHeavyDamageHitOffset: {x: 0.7, y: 0}
   damagePopupPrefab: {fileID: 5486348128603047901, guid: 2772f113c78f9c3448cc6e34708c6815, type: 3}
@@ -1288,6 +1288,7 @@ MonoBehaviour:
   percentPopupColor: {r: 0.35, g: 1, b: 0.9, a: 1}
   autoApplyAttack: 1
   attackHitDelay: 0.15
+  autoTriggerRageHeavyDamageOnHit: 0
   rageHeavyDamageKey: 114
   rageHeavyDamageReactionCooldown: 0.35
   skill1Trigger: Skill1
@@ -6766,6 +6767,14 @@ MonoBehaviour:
   pickupVFX: {fileID: 0}
   pickupClip: {fileID: 8300000, guid: d17e212c15a0f1a4a81c91cca97b6090, type: 3}
   pickupVolume: 1
+  playSpawnMotion: 1
+  spawnPopHeight: 0.75
+  spawnPopDuration: 0.12
+  spawnDropDuration: 0.18
+  pickupEnableDelay: 0.08
+  idleFloat: 1
+  floatAmplitude: 0.06
+  floatFrequency: 1.8
 --- !u!61 &2072788506
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6902,8 +6911,8 @@ Transform:
   m_GameObject: {fileID: 2072788503}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.95, y: -1.69, z: 0}
-  m_LocalScale: {x: 0.66, y: 0.66, z: 1}
+  m_LocalPosition: {x: 18.61, y: -6.39, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

@@ -34,6 +34,9 @@ public class IntroDialogueManager : MonoBehaviour
     public AudioClip typingEndSfx;
     [Tooltip("Volume for typing end SFX")]
     [Range(0f, 1f)] public float typingEndSfxVolume = 1f;
+    [Header("Scene Flow")]
+    [Tooltip("Scene to load after dialogue ends. If left empty, IntroScene -> Floor1 and FinalScene -> MainMenu.")]
+    public string sceneToLoadOnComplete = "Floor1";
 
     private int index = 0;
     private Coroutine typingCoroutine = null;
@@ -53,6 +56,18 @@ public class IntroDialogueManager : MonoBehaviour
 
     void Start()
     {
+        EnsureDefaultFinalSceneLines();
+
+        // always send the final cutscene back to the main menu
+        if (SceneManager.GetActiveScene().name == "FinalScene")
+        {
+            sceneToLoadOnComplete = "MainMenu";
+        }
+
+        // Smart default for a copied intro scene used as FinalScene.
+        if (string.IsNullOrWhiteSpace(sceneToLoadOnComplete))
+            sceneToLoadOnComplete = GetDefaultCompleteScene();
+
         if (lines == null || lines.Length == 0)
         {
             if (dialogueText != null) dialogueText.text = "";
@@ -214,10 +229,34 @@ public class IntroDialogueManager : MonoBehaviour
 
         if (lines == null || lines.Length == 0 || index >= lines.Length)
         {
-            SceneManager.LoadScene("Floor1");
+            SceneManager.LoadScene(sceneToLoadOnComplete);
             return;
         }
 
         ShowLine();
+    }
+
+    private string GetDefaultCompleteScene()
+    {
+        string current = SceneManager.GetActiveScene().name;
+        if (current == "FinalScene") return "MainMenu";
+        return "Floor1";
+    }
+
+    private void EnsureDefaultFinalSceneLines()
+    {
+        if (SceneManager.GetActiveScene().name != "FinalScene") return;
+        if (lines != null && lines.Length > 0) return;
+
+        // Auto-story for FinalScene so the ending always has context even before art assets are assigned.
+        lines = new DialogueLine[]
+        {
+            new DialogueLine { text = "So, all five shards are finally together. Cagayan de Oro actually feels... calm now? Wild." },
+            new DialogueLine { text = "Streets quiet again, no wreck cars, no shadowy figures. Just jeepneys honking and people going about their day." },
+            new DialogueLine { text = "That ninja power? It’s fading out. Funny, I can feel my heartbeat without it now." },
+            new DialogueLine { text = "My uniforms are back again, my hair is finally back, I'm me again. A regular guy again." },
+            new DialogueLine { text = "Tomorrow it's programming at the school, not monster hunting. Manok ni bobords, again." },
+            new DialogueLine { text = "Quest complete. Time for real life. S#*T." }
+        };
     }
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 /// <summary>
@@ -163,6 +164,16 @@ public class Enemy : MonoBehaviour
     private GameObject shardPickupPrefab = null;
     [SerializeField, Tooltip("Extra offset from the enemy's right edge where the shard spawns. +X is world-right.")]
     private Vector2 shardDropOffset = new Vector2(0.35f, 0f);
+
+    [Header("Stage 5 Finale")]
+    [SerializeField, Tooltip("If true, this enemy is treated as the Stage 5 final boss for finale flow.")]
+    private bool isStage5FinalBoss = false;
+    [SerializeField, Tooltip("If true, mute configured BGM audio sources immediately when this enemy dies.")]
+    private bool muteBgmOnDeath = true;
+    [SerializeField, Tooltip("Seconds to fade out Stage 5 BGM after final boss death (0 = instant mute).")]
+    private float bgmFadeOutDuration = 0.5f;
+    [SerializeField, Tooltip("Optional BGM sources to mute. If empty, script mutes looping scene AudioSources.")]
+    private AudioSource[] bgmSourcesToMute;
 
     [Header("Ranged")]
     [SerializeField, Tooltip("Projectile prefab to spawn for ranged attacks (assign Arrow Projectile prefab)")] private GameObject rangedProjectilePrefab = null;
@@ -1350,6 +1361,8 @@ public class Enemy : MonoBehaviour
         if (isDead) return;
         isDead = true;
 
+        HandleStage5FinalBossDeath();
+
         // stop ongoing coroutines and timers
         if (attackWatcherCoroutine != null) { StopCoroutine(attackWatcherCoroutine); attackWatcherCoroutine = null; }
         if (applyDamageCoroutine != null) { StopCoroutine(applyDamageCoroutine); applyDamageCoroutine = null; }
@@ -1415,6 +1428,60 @@ public class Enemy : MonoBehaviour
             // Immediately cleanup (spawn effects, play sfx, destroy/disable)
             DoDeathCleanup();
         }
+    }
+
+    private void HandleStage5FinalBossDeath()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        bool isStage5Scene = sceneName.Equals("Floor5");
+        bool isEligibleFinalBoss = isStage5FinalBoss || (isStage5Scene && dropShardOnDeath);
+        if (!isEligibleFinalBoss) return;
+
+        FinalSequenceState.MarkStage5BossDefeated();
+
+        if (muteBgmOnDeath)
+            MuteStageMusicNow();
+    }
+
+    private void MuteStageMusicNow()
+    {
+        var sources = GetStageBgmSources();
+        foreach (var src in sources)
+        {
+            if (src == null) continue;
+
+            if (bgmFadeOutDuration > 0f)
+            {
+                var helper = src.GetComponent<AudioSourceFadeHelper>();
+                if (helper == null)
+                    helper = src.gameObject.AddComponent<AudioSourceFadeHelper>();
+                helper.FadeOutAndStop(src, bgmFadeOutDuration);
+            }
+            else
+            {
+                src.volume = 0f;
+                src.mute = true;
+                if (src.isPlaying) src.Stop();
+            }
+        }
+    }
+
+    private AudioSource[] GetStageBgmSources()
+    {
+        bool usedExplicitSources = bgmSourcesToMute != null && bgmSourcesToMute.Length > 0;
+        if (usedExplicitSources)
+            return bgmSourcesToMute;
+
+        var allSources = FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
+        var looping = new System.Collections.Generic.List<AudioSource>();
+        foreach (var src in allSources)
+        {
+            if (src == null) continue;
+            if (!src.loop) continue;
+            looping.Add(src);
+        }
+
+        return looping.ToArray();
     }
 
     private void DoDeathCleanup()

@@ -104,8 +104,9 @@ public class Player : MonoBehaviour
     private int rageHeavyDamageDamage = 25;
     [SerializeField, Tooltip("Chance (0..1) for rage heavy-damage to crit")]
     private float rageHeavyDamageCritChance = 0.15f;
-    [SerializeField, Tooltip("Critical damage multiplier for rage heavy-damage")]
-    private float rageHeavyDamageCritMultiplier = 1.75f;
+    [SerializeField, Tooltip("Critical damage multiplier for rage heavy-damage; kept at 0.8 per design")]
+    // user requested a fixed 0.8 multiplier - OnValidate ensures editor shows 0.8 even if previously serialized higher
+    private float rageHeavyDamageCritMultiplier = 0.8f;
     [SerializeField, Tooltip("Radius used to detect enemies for rage heavy-damage")]
     private float rageHeavyDamageHitRadius = 1.0f;
     [SerializeField, Tooltip("Offset from player pivot where rage heavy-damage is centered (local space)")]
@@ -127,6 +128,8 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("Delay (seconds) before auto-applying hit if animation event is missing")] private float attackHitDelay = 0.15f;
 
     [Header("Rage Heavy Damage Input")]
+    [SerializeField, Tooltip("If true, taking damage while raging auto-triggers the rage heavy-damage reaction. Disable for manual key-only control.")]
+    private bool autoTriggerRageHeavyDamageOnHit = false;
     [SerializeField, Tooltip("Key used to apply heavy-damage to the player while raging")]
     private KeyCode rageHeavyDamageKey = KeyCode.R;
     [SerializeField, Tooltip("Minimum seconds between rage heavy-damage reaction triggers to avoid animation loops")]
@@ -424,7 +427,7 @@ public class Player : MonoBehaviour
         // Cache components used by trail / visuals
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerHealth = GetComponent<PlayerHealth>();
-        if (playerHealth != null)
+        if (playerHealth != null && autoTriggerRageHeavyDamageOnHit)
             playerHealth.onHit.AddListener(TriggerRageHeavyDamageReaction);
 
         CacheAnimatorParameters();
@@ -432,7 +435,7 @@ public class Player : MonoBehaviour
 
     void OnDestroy()
     {
-        if (playerHealth != null)
+        if (playerHealth != null && autoTriggerRageHeavyDamageOnHit)
             playerHealth.onHit.RemoveListener(TriggerRageHeavyDamageReaction);
     }
 
@@ -450,6 +453,10 @@ public class Player : MonoBehaviour
             if (groundCheck != null)
                 groundCheck.position = new Vector3(b.center.x, b.min.y + groundCheckBoxSize.y * 0.5f, transform.position.z);
         }
+
+        // enforce the heavy-damage crit multiplier stays at 0.8 so old serialized values don't linger
+        if (rageHeavyDamageCritMultiplier != 0.8f)
+            rageHeavyDamageCritMultiplier = 0.8f;
     }
 #endif
 
@@ -940,8 +947,9 @@ public class Player : MonoBehaviour
 
     private float GetEffectiveRageHeavyDamageCritMultiplier()
     {
-        float m = isRaging ? Mathf.Max(0f, rageCritMultiplierMultiplier) : 1f;
-        return Mathf.Max(1f, rageHeavyDamageCritMultiplier * m);
+        // return the configured multiplier directly; do not enforce a minimum of 1.
+        // this makes the crit multiplier equal to whatever the field is (0.8 by default).
+        return rageHeavyDamageCritMultiplier;
     }
 
     private float GetEffectiveRageHeavyDamageHitRadius()

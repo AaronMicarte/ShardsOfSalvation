@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Collider2D))]
 public class ShardPickup : MonoBehaviour
@@ -20,6 +21,12 @@ public class ShardPickup : MonoBehaviour
     [SerializeField, Tooltip("If enabled, shard gently moves up/down while waiting to be picked.")] private bool idleFloat = true;
     [SerializeField, Tooltip("Vertical bob amount in world units.")] private float floatAmplitude = 0.06f;
     [SerializeField, Tooltip("Bobbing speed in cycles per second.")] private float floatFrequency = 1.8f;
+
+    [Header("Final Scene Transition")]
+    [SerializeField, Tooltip("If true, this pickup can trigger FinalScene when collected in Floor5 after final boss defeat.")]
+    private bool allowFinalSceneTransition = true;
+    [SerializeField, Tooltip("Scene name to load when final Stage 5 shard is collected.")]
+    private string finalSceneName = "FinalScene";
 
     private bool canBePicked = true;
     private bool floatActive = false;
@@ -74,7 +81,21 @@ public class ShardPickup : MonoBehaviour
         if (pickupClip != null)
             AudioSource.PlayClipAtPoint(pickupClip, transform.position, pickupVolume);
 
+        TryLoadFinalSceneAfterPickup();
+
         Destroy(gameObject);
+    }
+
+    private void TryLoadFinalSceneAfterPickup()
+    {
+        if (!allowFinalSceneTransition) return;
+        if (!FinalSequenceState.Stage5BossDefeated) return;
+
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (!sceneName.Equals("Floor5")) return;
+        if (string.IsNullOrWhiteSpace(finalSceneName)) return;
+
+        SceneManager.LoadScene(finalSceneName);
     }
 
     private IEnumerator SpawnMotionRoutine()
