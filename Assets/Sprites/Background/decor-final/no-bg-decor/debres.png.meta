@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 0fe20bfd78ac54d4ca5650355244ac5e
+guid: 4284b78ac512850408c0310733ba0f44
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3822790657373321845
-    second: ayala_0
+      213: -4900662186233621424
+    second: debres_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ayala_0
+      name: debres_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 87
-        width: 600
-        height: 354
+        x: 87
+        y: 159
+        width: 434
+        height: 248
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b85c490b628b2fac0800000000000000
-      internalID: -3822790657373321845
+      spriteID: 0541b59d4b95dfbb0800000000000000
+      internalID: -4900662186233621424
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ayala_0: -3822790657373321845
+      debres_0: -4900662186233621424
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

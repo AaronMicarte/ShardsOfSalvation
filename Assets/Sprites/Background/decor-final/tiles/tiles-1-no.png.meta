@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: d8cf6005ec5e8e149a82ec5301c305e4
+guid: bc5b5a18326b83440b3c914f6170b6bb
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2183979112832032515
-    second: concrate_0
-  - first:
-      213: -4442239594789185939
-    second: concrate_1
+      213: -6427975755258834107
+    second: tiles-1-no_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -116,35 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: concrate_0
+      name: tiles-1-no_0
       rect:
         serializedVersion: 2
-        x: 7
-        y: 129
-        width: 11
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 30fd9319e6d0f4e10800000000000000
-      internalID: 2183979112832032515
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: concrate_1
-      rect:
-        serializedVersion: 2
-        x: 10
+        x: 31
         y: 27
-        width: 581
-        height: 462
+        width: 530
+        height: 82
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d665a61ef9ef952c0800000000000000
-      internalID: -4442239594789185939
+      spriteID: 54359f28b1e3bc6a0800000000000000
+      internalID: -6427975755258834107
       vertices: []
       indices: 
       edges: []
@@ -173,8 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      concrate_0: 2183979112832032515
-      concrate_1: -4442239594789185939
+      tiles-1-no_0: -6427975755258834107
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

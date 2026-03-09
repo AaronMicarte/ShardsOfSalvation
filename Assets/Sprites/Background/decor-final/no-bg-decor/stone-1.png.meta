@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 0fe20bfd78ac54d4ca5650355244ac5e
+guid: ab57da1b026da33499d3145631368098
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3822790657373321845
-    second: ayala_0
+      213: 2300155585132660093
+    second: stone-1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ayala_0
+      name: stone-1_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 87
-        width: 600
-        height: 354
+        x: 71
+        y: 14
+        width: 442
+        height: 266
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b85c490b628b2fac0800000000000000
-      internalID: -3822790657373321845
+      spriteID: d7586f3615bcbef10800000000000000
+      internalID: 2300155585132660093
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ayala_0: -3822790657373321845
+      stone-1_0: 2300155585132660093
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
