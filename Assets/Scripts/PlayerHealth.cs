@@ -17,6 +17,11 @@ public class PlayerHealth : MonoBehaviour
     [Header("Events")]
     public UnityEvent onHit;
     public UnityEvent onDeath;
+    [Header("Audio")]
+    [Tooltip("Optional SFX to play when the player takes damage")]
+    public AudioClip hurtClip;
+    [Tooltip("Hurt SFX volume"), Range(0f, 1f)]
+    public float hurtVolume = 1f;
     [Header("Death")]
     [Tooltip("Animator on the player (optional). If assigned, the trigger in Death Trigger will be used when the player dies.")]
     public Animator animator;
@@ -151,6 +156,7 @@ public class PlayerHealth : MonoBehaviour
         enemyHits++; // count attack
 
         onHit?.Invoke();
+        if (hurtClip != null) AudioSource.PlayClipAtPoint(hurtClip, transform.position, hurtVolume);
 
         if (hpBar != null) hpBar.SetHP(currentHP);
         SaveCurrentHP();

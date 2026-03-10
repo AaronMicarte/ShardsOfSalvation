@@ -15,6 +15,10 @@ public class MainMenuController : MonoBehaviour
     public TextMeshProUGUI titleText;
     public TextMeshProUGUI subtitleText;
     public TextMeshProUGUI instructionsText;
+    public Button mainPlayButton;
+    public Button instructionsPlayButton;
+    public Button instructionsBackButton;
+    public Button quitButton;
 
     [Header("Audio")]
     public AudioClip menuBgm;
@@ -30,6 +34,16 @@ public class MainMenuController : MonoBehaviour
     // internal
     CanvasGroup mainMenuCanvasGroup;
     CanvasGroup instructionsCanvasGroup;
+
+    void OnEnable()
+    {
+        BindButtonListeners();
+    }
+
+    void OnDisable()
+    {
+        UnbindButtonListeners();
+    }
 
     void Awake()
     {
@@ -74,6 +88,23 @@ public class MainMenuController : MonoBehaviour
             audioSource.loop = true;
             audioSource.Play();
         }
+    }
+
+    void BindButtonListeners()
+    {
+        // These bindings are optional and only applied when button refs are assigned in Inspector.
+        if (mainPlayButton != null) mainPlayButton.onClick.AddListener(OnPlayPressed);
+        if (instructionsPlayButton != null) instructionsPlayButton.onClick.AddListener(OnStartPressed);
+        if (instructionsBackButton != null) instructionsBackButton.onClick.AddListener(OnBackPressed);
+        if (quitButton != null) quitButton.onClick.AddListener(OnQuitPressed);
+    }
+
+    void UnbindButtonListeners()
+    {
+        if (mainPlayButton != null) mainPlayButton.onClick.RemoveListener(OnPlayPressed);
+        if (instructionsPlayButton != null) instructionsPlayButton.onClick.RemoveListener(OnStartPressed);
+        if (instructionsBackButton != null) instructionsBackButton.onClick.RemoveListener(OnBackPressed);
+        if (quitButton != null) quitButton.onClick.RemoveListener(OnQuitPressed);
     }
 
     public void OnPlayPressed()

@@ -1158,6 +1158,8 @@ MonoBehaviour:
   onDeath:
     m_PersistentCalls:
       m_Calls: []
+  hurtClip: {fileID: 0}
+  hurtVolume: 1
   animator: {fileID: 352744352}
   deathTrigger: Dead
   deathStateName: dead
@@ -1237,6 +1239,10 @@ MonoBehaviour:
   attackVolume: 1
   dashClip: {fileID: 8300000, guid: 81104c8d33b6f7545aa9db285890ea9a, type: 3}
   dashVolume: 1
+  rageHeavyDamageReactClip: {fileID: 8300000, guid: c633e0bc689b70a4ebcf34ef10333355, type: 3}
+  rageHeavyDamageReactVolume: 1
+  rageHeavyDamageImpactClip: {fileID: 0}
+  rageHeavyDamageImpactVolume: 1
   footstepClip: {fileID: 8300000, guid: 6060132c6b098ad4d85699466a125531, type: 3}
   footstepVolume: 1
   footstepInterval: 0.4
@@ -2812,6 +2818,10 @@ MonoBehaviour:
   dropShardOnDeath: 1
   shardPickupPrefab: {fileID: 2072788503}
   shardDropOffset: {x: 0.1, y: 0}
+  isStage5FinalBoss: 0
+  muteBgmOnDeath: 1
+  bgmFadeOutDuration: 0.5
+  bgmSourcesToMute: []
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0
@@ -6775,6 +6785,8 @@ MonoBehaviour:
   idleFloat: 1
   floatAmplitude: 0.06
   floatFrequency: 1.8
+  allowFinalSceneTransition: 1
+  finalSceneName: FinalScene
 --- !u!61 &2072788506
 BoxCollider2D:
   m_ObjectHideFlags: 0

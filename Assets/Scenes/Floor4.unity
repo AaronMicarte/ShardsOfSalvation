@@ -2405,6 +2405,10 @@ MonoBehaviour:
   dropShardOnDeath: 0
   shardPickupPrefab: {fileID: 0}
   shardDropOffset: {x: 0.35, y: 0}
+  isStage5FinalBoss: 0
+  muteBgmOnDeath: 1
+  bgmFadeOutDuration: 0.5
+  bgmSourcesToMute: []
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0
@@ -3018,6 +3022,16 @@ MonoBehaviour:
   pickupVFX: {fileID: 0}
   pickupClip: {fileID: 8300000, guid: d17e212c15a0f1a4a81c91cca97b6090, type: 3}
   pickupVolume: 1
+  playSpawnMotion: 1
+  spawnPopHeight: 0.75
+  spawnPopDuration: 0.12
+  spawnDropDuration: 0.18
+  pickupEnableDelay: 0.08
+  idleFloat: 1
+  floatAmplitude: 0.06
+  floatFrequency: 1.8
+  allowFinalSceneTransition: 1
+  finalSceneName: FinalScene
 --- !u!61 &820874184
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3447,6 +3461,10 @@ MonoBehaviour:
   dropShardOnDeath: 0
   shardPickupPrefab: {fileID: 0}
   shardDropOffset: {x: 0.35, y: 0}
+  isStage5FinalBoss: 0
+  muteBgmOnDeath: 1
+  bgmFadeOutDuration: 0.5
+  bgmSourcesToMute: []
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0
@@ -3868,6 +3886,10 @@ MonoBehaviour:
   dropShardOnDeath: 1
   shardPickupPrefab: {fileID: 820874181}
   shardDropOffset: {x: 0.1, y: 0}
+  isStage5FinalBoss: 0
+  muteBgmOnDeath: 1
+  bgmFadeOutDuration: 0.5
+  bgmSourcesToMute: []
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0
@@ -5054,6 +5076,10 @@ MonoBehaviour:
   dropShardOnDeath: 0
   shardPickupPrefab: {fileID: 0}
   shardDropOffset: {x: 0.35, y: 0}
+  isStage5FinalBoss: 0
+  muteBgmOnDeath: 1
+  bgmFadeOutDuration: 0.5
+  bgmSourcesToMute: []
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0
@@ -7048,6 +7074,10 @@ MonoBehaviour:
   dropShardOnDeath: 0
   shardPickupPrefab: {fileID: 0}
   shardDropOffset: {x: 0.35, y: 0}
+  isStage5FinalBoss: 0
+  muteBgmOnDeath: 1
+  bgmFadeOutDuration: 0.5
+  bgmSourcesToMute: []
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0
@@ -7510,6 +7540,10 @@ MonoBehaviour:
   dropShardOnDeath: 0
   shardPickupPrefab: {fileID: 0}
   shardDropOffset: {x: 0.35, y: 0}
+  isStage5FinalBoss: 0
+  muteBgmOnDeath: 1
+  bgmFadeOutDuration: 0.5
+  bgmSourcesToMute: []
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0
@@ -8036,6 +8070,8 @@ MonoBehaviour:
   onDeath:
     m_PersistentCalls:
       m_Calls: []
+  hurtClip: {fileID: 0}
+  hurtVolume: 1
   animator: {fileID: 2090439750}
   deathTrigger: Dead
   deathStateName: dead
@@ -8115,6 +8151,10 @@ MonoBehaviour:
   attackVolume: 1
   dashClip: {fileID: 8300000, guid: 81104c8d33b6f7545aa9db285890ea9a, type: 3}
   dashVolume: 1
+  rageHeavyDamageReactClip: {fileID: 8300000, guid: c633e0bc689b70a4ebcf34ef10333355, type: 3}
+  rageHeavyDamageReactVolume: 1
+  rageHeavyDamageImpactClip: {fileID: 0}
+  rageHeavyDamageImpactVolume: 1
   footstepClip: {fileID: 8300000, guid: 6060132c6b098ad4d85699466a125531, type: 3}
   footstepVolume: 1
   footstepInterval: 0.4
@@ -8153,7 +8193,7 @@ MonoBehaviour:
   skill1HitOffset: {x: 0.6, y: 0}
   rageHeavyDamageDamage: 25
   rageHeavyDamageCritChance: 0.15
-  rageHeavyDamageCritMultiplier: 1.75
+  rageHeavyDamageCritMultiplier: 0.8
   rageHeavyDamageHitRadius: 1
   rageHeavyDamageHitOffset: {x: 0.7, y: 0}
   damagePopupPrefab: {fileID: 5486348128603047901, guid: 2772f113c78f9c3448cc6e34708c6815, type: 3}
@@ -8166,6 +8206,7 @@ MonoBehaviour:
   percentPopupColor: {r: 1, g: 1, b: 1, a: 1}
   autoApplyAttack: 1
   attackHitDelay: 0.15
+  autoTriggerRageHeavyDamageOnHit: 0
   rageHeavyDamageKey: 114
   rageHeavyDamageReactionCooldown: 0.35
   skill1Trigger: Skill1
