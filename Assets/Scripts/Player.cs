@@ -49,6 +49,10 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("AudioClip to play for Skill1")] private AudioClip skill1Clip; [SerializeField, Tooltip("AudioClip to play for the basic Attack")] private AudioClip attackClip;
     [SerializeField, Range(0f, 1f), Tooltip("Volume for attack sound when using PlayOneShot")] private float attackVolume = 1f; [SerializeField, Tooltip("AudioClip to play for Dash")] private AudioClip dashClip;
     [SerializeField, Range(0f, 1f), Tooltip("Volume for dash sound when using PlayOneShot")] private float dashVolume = 1f;
+    [SerializeField, Tooltip("AudioClip to play when rage heavy-damage reaction starts")] private AudioClip rageHeavyDamageReactClip;
+    [SerializeField, Range(0f, 1f), Tooltip("Volume for rage heavy-damage reaction SFX")] private float rageHeavyDamageReactVolume = 1f;
+    [SerializeField, Tooltip("AudioClip to play on rage heavy-damage impact frame")] private AudioClip rageHeavyDamageImpactClip;
+    [SerializeField, Range(0f, 1f), Tooltip("Volume for rage heavy-damage impact SFX")] private float rageHeavyDamageImpactVolume = 1f;
     [SerializeField, Tooltip("AudioClip to play for footsteps while walking")] private AudioClip footstepClip;
     [SerializeField, Range(0f, 1f), Tooltip("Volume for footstep sound when using PlayOneShot")] private float footstepVolume = 1f;
     [SerializeField, Tooltip("Seconds between footsteps while walking (lower = faster steps)")] private float footstepInterval = 0.4f;
@@ -1087,6 +1091,17 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void PlayClip(AudioClip clip, float volume)
+    {
+        if (clip == null) return;
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
+
+        if (audioSource != null)
+            audioSource.PlayOneShot(clip, Mathf.Clamp01(volume));
+        else
+            AudioSource.PlayClipAtPoint(clip, transform.position, Mathf.Clamp01(volume));
+    }
+
     // ------------------------ Attack ------------------------
     private void TryAttack()
     {
@@ -1433,6 +1448,7 @@ public class Player : MonoBehaviour
 
         rageHeavyDamageInProgress = true;
         lastRageHeavyDamageReactionTime = Time.time;
+        PlayClip(rageHeavyDamageReactClip, rageHeavyDamageReactVolume);
 
         if (rageHeavyDamageRecoverRoutine != null)
         {
@@ -1458,6 +1474,7 @@ public class Player : MonoBehaviour
         if (!rageHeavyDamageInProgress) return;
         if (playerHealth != null && playerHealth.IsDead()) return;
 
+        PlayClip(rageHeavyDamageImpactClip, rageHeavyDamageImpactVolume);
         ApplyRageHeavyDamageToEnemies();
     }
 
