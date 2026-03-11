@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: 76cc189d34a319a4880f097e571b7b1f
+guid: 5ec435b4f5468c14cb517c42bf8fcf0d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1184505520892676556
-    second: bg-ice_0
+      213: 917605499289819140
+    second: tiles-2-no_0
+  - first:
+      213: 8715468013723045799
+    second: tiles-2-no_1
+  - first:
+      213: -2742081858760185544
+    second: tiles-2-no_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +57,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 50
+  spritePixelsToUnits: 220
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +119,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: bg-ice_0
+      name: tiles-2-no_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1388
-        height: 752
+        x: 24
+        y: 47
+        width: 521
+        height: 433
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +134,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 436f3b8218acf8fe0800000000000000
-      internalID: -1184505520892676556
+      spriteID: 4085d15075dfbbc00800000000000000
+      internalID: 917605499289819140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tiles-2-no_1
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 43
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7afcd316bff83f870800000000000000
+      internalID: 8715468013723045799
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tiles-2-no_2
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 26
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8396e8fd31b22f9d0800000000000000
+      internalID: -2742081858760185544
       vertices: []
       indices: 
       edges: []
@@ -148,7 +198,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      bg-ice_0: -1184505520892676556
+      tiles-2-no_0: 917605499289819140
+      tiles-2-no_1: 8715468013723045799
+      tiles-2-no_2: -2742081858760185544
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 76cc189d34a319a4880f097e571b7b1f
+guid: 3b6ca3941261e3143b331ae2bf853726
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1184505520892676556
-    second: bg-ice_0
+      213: 359788456126783194
+    second: hill_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 50
+  spritePixelsToUnits: 10
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: bg-ice_0
+      name: hill_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1388
-        height: 752
+        width: 593
+        height: 141
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 436f3b8218acf8fe0800000000000000
-      internalID: -1184505520892676556
+      spriteID: ade19b1d1b93ef400800000000000000
+      internalID: 359788456126783194
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      bg-ice_0: -1184505520892676556
+      hill_0: 359788456126783194
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
