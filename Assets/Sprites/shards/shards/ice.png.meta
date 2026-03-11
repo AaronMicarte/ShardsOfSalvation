@@ -119,12 +119,12 @@ TextureImporter:
       name: ice_0
       rect:
         serializedVersion: 2
-        x: 9
-        y: 10
-        width: 65
-        height: 103
+        x: 0
+        y: 0
+        width: 80
+        height: 122
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -137,33 +137,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: ice_1
-      rect:
-        serializedVersion: 2
-        x: 9
-        y: 28
-        width: 8
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6ffbe329b476d51f0800000000000000
-      internalID: -1054573163461033994
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 36009cd685e3d974d95c35b794d5e089
     internalID: 0
     vertices: []
     indices: 

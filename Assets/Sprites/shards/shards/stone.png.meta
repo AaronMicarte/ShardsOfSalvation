@@ -128,12 +128,12 @@ TextureImporter:
       name: stone_0
       rect:
         serializedVersion: 2
-        x: 2
-        y: 10
-        width: 72
-        height: 104
+        x: 0
+        y: 0
+        width: 74
+        height: 121
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -146,99 +146,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: stone_1
-      rect:
-        serializedVersion: 2
-        x: 60
-        y: 87
-        width: 7
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a63736d411e9b1500800000000000000
-      internalID: 368061591710823274
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: stone_2
-      rect:
-        serializedVersion: 2
-        x: 66
-        y: 87
-        width: 8
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a0523fcc19292a510800000000000000
-      internalID: 1558969575930012938
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: stone_3
-      rect:
-        serializedVersion: 2
-        x: 7
-        y: 21
-        width: 7
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 83aea163122d8f060800000000000000
-      internalID: 6987565861948811832
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: stone_4
-      rect:
-        serializedVersion: 2
-        x: 62
-        y: 30
-        width: 6
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 477ae9c4be88c6310800000000000000
-      internalID: 1399644128389539700
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 6a55e91bd81de074f82fccf123a3c608
     internalID: 0
     vertices: []
     indices: 
