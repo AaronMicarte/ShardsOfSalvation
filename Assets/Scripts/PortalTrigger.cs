@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections;
+using UnityEngine.UI;
 
 public class PortalTrigger : MonoBehaviour
 {
@@ -42,6 +43,9 @@ public class PortalTrigger : MonoBehaviour
             ShowMessage(missingShardMessage);
             return;
         }
+
+        // Persist run buffs when advancing between stages.
+        Player.SaveActiveDropBuffStacksForRetry();
 
         // Optional: Debug.Log("Player hit portal");
         SceneManager.LoadScene(sceneToLoad);
@@ -108,17 +112,70 @@ public class PortalTrigger : MonoBehaviour
     private void EnsureMessageText()
     {
         if (messageText != null) return;
-        var all = FindObjectsOfType<TMPro.TextMeshProUGUI>(includeInactive: true);
+        var all = FindObjectsByType<TextMeshProUGUI>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (var t in all)
         {
-            var n = t.name.ToLower();
-            if (n.Contains("message") || n.Contains("status") || n.Contains("hud") || n.Contains("screen") || n.Contains("notice"))
+            var n = t.name.ToLowerInvariant();
+            if (n.Contains("rage") || n.Contains("buff") || n.Contains("crit") || n.Contains("hud") || n.Contains("status"))
+                continue;
+
+            if (n.Contains("message") || n.Contains("notice") || n.Contains("warning") || n.Contains("alert") || n.Contains("portal"))
             {
                 messageText = t;
                 Debug.Log($"PortalTrigger: auto-assigned messageText -> {t.name}");
                 return;
             }
         }
+
+        messageText = GetOrCreateRuntimeMessageText();
+    }
+
+    private TextMeshProUGUI GetOrCreateRuntimeMessageText()
+    {
+        const string canvasName = "GameplayMessageCanvas";
+        const string textName = "GameplayMessageText";
+
+        Canvas targetCanvas = null;
+        var existingCanvas = GameObject.Find(canvasName);
+        if (existingCanvas != null)
+            targetCanvas = existingCanvas.GetComponent<Canvas>();
+
+        if (targetCanvas == null)
+        {
+            var canvasGo = new GameObject(canvasName, typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            targetCanvas = canvasGo.GetComponent<Canvas>();
+            targetCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            var scaler = canvasGo.GetComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            scaler.matchWidthOrHeight = 0.5f;
+        }
+
+        var existingText = targetCanvas.GetComponentsInChildren<TextMeshProUGUI>(true);
+        for (int i = 0; i < existingText.Length; i++)
+        {
+            if (existingText[i] != null && existingText[i].name == textName)
+                return existingText[i];
+        }
+
+        var textGo = new GameObject(textName, typeof(RectTransform), typeof(TextMeshProUGUI));
+        textGo.transform.SetParent(targetCanvas.transform, false);
+
+        var rect = textGo.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0.5f, 1f);
+        rect.anchorMax = new Vector2(0.5f, 1f);
+        rect.pivot = new Vector2(0.5f, 1f);
+        rect.anchoredPosition = new Vector2(0f, -120f);
+        rect.sizeDelta = new Vector2(900f, 120f);
+
+        var tmp = textGo.GetComponent<TextMeshProUGUI>();
+        tmp.fontSize = 34f;
+        tmp.alignment = TextAlignmentOptions.Top;
+        tmp.color = Color.white;
+        tmp.raycastTarget = false;
+        tmp.textWrappingMode = TextWrappingModes.NoWrap;
+        textGo.SetActive(false);
+        return tmp;
     }
 
     private bool HasRequiredShards()

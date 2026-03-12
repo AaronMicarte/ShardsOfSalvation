@@ -132,6 +132,7 @@ public class MainMenuController : MonoBehaviour
         // optional small delay for sound to play
         // Optionally reset persisted player HP so this starts a fresh run
         if (resetPlayerHPOnStart) PlayerHealth.ResetSavedHP();
+        Player.ResetSavedDropBuffStacks();
         StartCoroutine(LoadSceneAfterDelay(0.12f));
     }
 

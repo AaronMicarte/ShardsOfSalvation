@@ -6673,7 +6673,7 @@ MonoBehaviour:
     m_Bits: 0
   aggroDuration: 3
   damageTakenMultiplier: 1.1
-  armor: 6
+  armor: 14
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -6705,7 +6705,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  maxHealth: 66
+  maxHealth: 220
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -6737,6 +6737,11 @@ MonoBehaviour:
   dropShardOnDeath: 0
   shardPickupPrefab: {fileID: 0}
   shardDropOffset: {x: 0.35, y: 0}
+  dropBuffOnDeath: 0
+  buffPickupPrefab: {fileID: 0}
+  buffDropType: 0
+  buffStacksGranted: 1
+  buffDropOffset: {x: 0.1, y: 0}
   isStage5FinalBoss: 0
   muteBgmOnDeath: 1
   bgmFadeOutDuration: 0.5
@@ -7337,7 +7342,7 @@ MonoBehaviour:
     m_Bits: 8
   aggroDuration: 3
   damageTakenMultiplier: 1
-  armor: 8
+  armor: 9
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -7345,7 +7350,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 130
+  maxHealth: 300
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -7376,6 +7381,11 @@ MonoBehaviour:
   dropShardOnDeath: 0
   shardPickupPrefab: {fileID: 0}
   shardDropOffset: {x: 0.35, y: 0}
+  dropBuffOnDeath: 0
+  buffPickupPrefab: {fileID: 0}
+  buffDropType: 0
+  buffStacksGranted: 1
+  buffDropOffset: {x: 0.1, y: 0}
   isStage5FinalBoss: 0
   muteBgmOnDeath: 1
   bgmFadeOutDuration: 0.5
@@ -9604,7 +9614,7 @@ MonoBehaviour:
     m_Bits: 8
   aggroDuration: 3
   damageTakenMultiplier: 1
-  armor: 8
+  armor: 9
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -9612,7 +9622,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 130
+  maxHealth: 300
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -9643,6 +9653,11 @@ MonoBehaviour:
   dropShardOnDeath: 0
   shardPickupPrefab: {fileID: 0}
   shardDropOffset: {x: 0.35, y: 0}
+  dropBuffOnDeath: 0
+  buffPickupPrefab: {fileID: 0}
+  buffDropType: 0
+  buffStacksGranted: 1
+  buffDropOffset: {x: 0.1, y: 0}
   isStage5FinalBoss: 0
   muteBgmOnDeath: 1
   bgmFadeOutDuration: 0.5
@@ -12429,7 +12444,7 @@ MonoBehaviour:
     m_Bits: 0
   aggroDuration: 3
   damageTakenMultiplier: 1.1
-  armor: 6
+  armor: 14
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -12461,7 +12476,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  maxHealth: 66
+  maxHealth: 220
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -12493,6 +12508,11 @@ MonoBehaviour:
   dropShardOnDeath: 0
   shardPickupPrefab: {fileID: 0}
   shardDropOffset: {x: 0.35, y: 0}
+  dropBuffOnDeath: 1
+  buffPickupPrefab: {fileID: 6715161659561000347, guid: 6dc52fe1dffd356429307946813468df, type: 3}
+  buffDropType: 0
+  buffStacksGranted: 1
+  buffDropOffset: {x: 0.1, y: 0}
   isStage5FinalBoss: 0
   muteBgmOnDeath: 1
   bgmFadeOutDuration: 0.5
@@ -12990,7 +13010,7 @@ MonoBehaviour:
     m_Bits: 8
   aggroDuration: 3
   damageTakenMultiplier: 1
-  armor: 8
+  armor: 9
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -12998,7 +13018,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 130
+  maxHealth: 300
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -13029,6 +13049,11 @@ MonoBehaviour:
   dropShardOnDeath: 0
   shardPickupPrefab: {fileID: 0}
   shardDropOffset: {x: 0.35, y: 0}
+  dropBuffOnDeath: 0
+  buffPickupPrefab: {fileID: 0}
+  buffDropType: 0
+  buffStacksGranted: 1
+  buffDropOffset: {x: 0.1, y: 0}
   isStage5FinalBoss: 0
   muteBgmOnDeath: 1
   bgmFadeOutDuration: 0.5
@@ -14337,7 +14362,7 @@ MonoBehaviour:
     m_Bits: 0
   aggroDuration: 3
   damageTakenMultiplier: 1.1
-  armor: 6
+  armor: 14
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -14369,7 +14394,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  maxHealth: 66
+  maxHealth: 220
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -14401,6 +14426,11 @@ MonoBehaviour:
   dropShardOnDeath: 0
   shardPickupPrefab: {fileID: 0}
   shardDropOffset: {x: 0.35, y: 0}
+  dropBuffOnDeath: 0
+  buffPickupPrefab: {fileID: 0}
+  buffDropType: 0
+  buffStacksGranted: 1
+  buffDropOffset: {x: 0.1, y: 0}
   isStage5FinalBoss: 0
   muteBgmOnDeath: 1
   bgmFadeOutDuration: 0.5
@@ -14852,7 +14882,7 @@ MonoBehaviour:
     m_Bits: 8
   aggroDuration: 3
   damageTakenMultiplier: 1
-  armor: 8
+  armor: 9
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -14860,7 +14890,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 130
+  maxHealth: 300
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -14891,6 +14921,11 @@ MonoBehaviour:
   dropShardOnDeath: 0
   shardPickupPrefab: {fileID: 0}
   shardDropOffset: {x: 0.35, y: 0}
+  dropBuffOnDeath: 0
+  buffPickupPrefab: {fileID: 0}
+  buffDropType: 0
+  buffStacksGranted: 1
+  buffDropOffset: {x: 0.1, y: 0}
   isStage5FinalBoss: 0
   muteBgmOnDeath: 1
   bgmFadeOutDuration: 0.5
@@ -15784,8 +15819,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   aggroDuration: 3
-  damageTakenMultiplier: 0.85
-  armor: 13
+  damageTakenMultiplier: 1
+  armor: 16
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -15793,7 +15828,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 166
+  maxHealth: 370
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -15824,6 +15859,11 @@ MonoBehaviour:
   dropShardOnDeath: 1
   shardPickupPrefab: {fileID: 1910965105}
   shardDropOffset: {x: 0.1, y: 0}
+  dropBuffOnDeath: 1
+  buffPickupPrefab: {fileID: 6724670659867803009, guid: 0b050400190b12445b06d8150c797c2f, type: 3}
+  buffDropType: 1
+  buffStacksGranted: 1
+  buffDropOffset: {x: 0.1, y: 0}
   isStage5FinalBoss: 0
   muteBgmOnDeath: 1
   bgmFadeOutDuration: 0.5
@@ -16691,7 +16731,7 @@ MonoBehaviour:
     m_Bits: 8
   aggroDuration: 3
   damageTakenMultiplier: 1
-  armor: 8
+  armor: 9
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -16699,7 +16739,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 130
+  maxHealth: 300
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -16730,6 +16770,11 @@ MonoBehaviour:
   dropShardOnDeath: 0
   shardPickupPrefab: {fileID: 0}
   shardDropOffset: {x: 0.35, y: 0}
+  dropBuffOnDeath: 0
+  buffPickupPrefab: {fileID: 0}
+  buffDropType: 0
+  buffStacksGranted: 1
+  buffDropOffset: {x: 0.1, y: 0}
   isStage5FinalBoss: 0
   muteBgmOnDeath: 1
   bgmFadeOutDuration: 0.5
@@ -16999,7 +17044,7 @@ MonoBehaviour:
     m_Bits: 8
   aggroDuration: 3
   damageTakenMultiplier: 1
-  armor: 8
+  armor: 9
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -17007,7 +17052,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 130
+  maxHealth: 300
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -17038,6 +17083,11 @@ MonoBehaviour:
   dropShardOnDeath: 0
   shardPickupPrefab: {fileID: 0}
   shardDropOffset: {x: 0.35, y: 0}
+  dropBuffOnDeath: 0
+  buffPickupPrefab: {fileID: 0}
+  buffDropType: 0
+  buffStacksGranted: 1
+  buffDropOffset: {x: 0.1, y: 0}
   isStage5FinalBoss: 0
   muteBgmOnDeath: 1
   bgmFadeOutDuration: 0.5
@@ -19790,6 +19840,7 @@ MonoBehaviour:
   rageStartTriggerParam: RageStart
   rageBoolParam: Raging
   rageDuration: 10
+  rageCooldown: 12
   rageClip: {fileID: 8300000, guid: 6318a4ad568ae5c4bb566ad932e12f72, type: 3}
   rageVolume: 1
   rageSoundMaxDuration: 1
@@ -19840,6 +19891,7 @@ MonoBehaviour:
   attackDuration: 0.4
   attackCooldown: 0.8
   attackDamage: 12
+  attackDamageMax: 15
   attackUsesPercent: 0
   attackPercent: 0
   attackCritChance: 0.13
@@ -19850,15 +19902,24 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   skill1Damage: 22
+  skill1DamageMax: 25
   skill1CritChance: 0.15
   skill1CritMultiplier: 1.2
   skill1HitRadius: 0.8
   skill1HitOffset: {x: 0.6, y: 0}
   rageHeavyDamageDamage: 32
+  rageHeavyDamageDamageMax: 35
   rageHeavyDamageCritChance: 0.22
   rageHeavyDamageCritMultiplier: 1.55
   rageHeavyDamageHitRadius: 1
   rageHeavyDamageHitOffset: {x: 0.7, y: 0}
+  resetDropBuffsOnAwake: 1
+  damageBuffPerStackPercent: 0.1
+  maxTotalDamageBuffPercent: 0.5
+  maxDamageBuffStacks: 5
+  critDamageBuffPerStack: 0.12
+  maxTotalCritDamageBuff: 0.6
+  maxCritDamageBuffStacks: 5
   damagePopupPrefab: {fileID: 5486348128603047901, guid: 2772f113c78f9c3448cc6e34708c6815, type: 3}
   damagePopupOffset: {x: 0.15, y: 0.65, z: 0}
   damagePopupRandomRange: {x: 0.08, y: 0.08}
@@ -19871,7 +19932,14 @@ MonoBehaviour:
   attackHitDelay: 0.15
   autoTriggerRageHeavyDamageOnHit: 0
   rageHeavyDamageKey: 114
-  rageHeavyDamageReactionCooldown: 0.35
+  rageHeavyDamageReactionCooldown: 1.8
+  autoCreateRageStatusUI: 1
+  rageStatusUIAnchoredPosition: {x: 18, y: -140}
+  rageStatusUIFontSize: 20
+  rageStatusUIColor: {r: 1, g: 0.95, b: 0.8, a: 0.95}
+  rageReadyColor: {r: 0.45, g: 1, b: 0.45, a: 0.95}
+  rageCooldownColor: {r: 1, g: 0.35, b: 0.35, a: 0.95}
+  rageActiveColor: {r: 1, g: 0.7, b: 0.25, a: 0.95}
   skill1Trigger: Skill1
   skill1Duration: 0.7
   skill1Cooldown: 2.5
@@ -20274,7 +20342,7 @@ MonoBehaviour:
     m_Bits: 0
   aggroDuration: 3
   damageTakenMultiplier: 1
-  armor: 14
+  armor: 10
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -20282,7 +20350,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 100
+  maxHealth: 150
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -20315,6 +20383,11 @@ MonoBehaviour:
   dropShardOnDeath: 0
   shardPickupPrefab: {fileID: 0}
   shardDropOffset: {x: 0.1, y: 0}
+  dropBuffOnDeath: 1
+  buffPickupPrefab: {fileID: 6715161659561000347, guid: 6dc52fe1dffd356429307946813468df, type: 3}
+  buffDropType: 0
+  buffStacksGranted: 1
+  buffDropOffset: {x: 0.1, y: 0}
   isStage5FinalBoss: 0
   muteBgmOnDeath: 1
   bgmFadeOutDuration: 0.5

@@ -7637,7 +7637,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ControlsInversion
   player: {fileID: 352744353}
   autoStop: 1
-  inversionDuration: 60
+  inversionDuration: 999
   messageText: {fileID: 1858588989}
   inversionMessage: Control Inversion
   messageDuration: 5
@@ -7819,6 +7819,7 @@ MonoBehaviour:
   rageStartTriggerParam: RageStart
   rageBoolParam: Raging
   rageDuration: 10
+  rageCooldown: 12
   rageClip: {fileID: 8300000, guid: 6318a4ad568ae5c4bb566ad932e12f72, type: 3}
   rageVolume: 1
   rageSoundMaxDuration: 1
@@ -7843,7 +7844,7 @@ MonoBehaviour:
   attackVolume: 1
   dashClip: {fileID: 8300000, guid: 81104c8d33b6f7545aa9db285890ea9a, type: 3}
   dashVolume: 1
-  rageHeavyDamageReactClip: {fileID: 8300000, guid: c633e0bc689b70a4ebcf34ef10333355, type: 3}
+  rageHeavyDamageReactClip: {fileID: 8300000, guid: 0afa3ed6a1285bf43a2d75ec618b45f8, type: 3}
   rageHeavyDamageReactVolume: 1
   rageHeavyDamageImpactClip: {fileID: 0}
   rageHeavyDamageImpactVolume: 1
@@ -7891,6 +7892,13 @@ MonoBehaviour:
   rageHeavyDamageCritMultiplier: 1.55
   rageHeavyDamageHitRadius: 1
   rageHeavyDamageHitOffset: {x: 0.7, y: 0}
+  resetDropBuffsOnAwake: 1
+  damageBuffPerStackPercent: 0.1
+  maxTotalDamageBuffPercent: 0.5
+  maxDamageBuffStacks: 5
+  critDamageBuffPerStack: 0.12
+  maxTotalCritDamageBuff: 0.6
+  maxCritDamageBuffStacks: 5
   damagePopupPrefab: {fileID: 5486348128603047901, guid: 2772f113c78f9c3448cc6e34708c6815, type: 3}
   damagePopupOffset: {x: 0.15, y: 0.65, z: 0}
   damagePopupRandomRange: {x: 0.08, y: 0.08}
@@ -7903,7 +7911,14 @@ MonoBehaviour:
   attackHitDelay: 0.15
   autoTriggerRageHeavyDamageOnHit: 0
   rageHeavyDamageKey: 114
-  rageHeavyDamageReactionCooldown: 0.35
+  rageHeavyDamageReactionCooldown: 1.8
+  autoCreateRageStatusUI: 1
+  rageStatusUIAnchoredPosition: {x: 18, y: -140}
+  rageStatusUIFontSize: 20
+  rageStatusUIColor: {r: 1, g: 0.95, b: 0.8, a: 0.95}
+  rageReadyColor: {r: 0.45, g: 1, b: 0.45, a: 0.95}
+  rageCooldownColor: {r: 1, g: 0.35, b: 0.35, a: 0.95}
+  rageActiveColor: {r: 1, g: 0.7, b: 0.25, a: 0.95}
   skill1Trigger: Skill1
   skill1Duration: 0.7
   skill1Cooldown: 2.5
@@ -15499,7 +15514,7 @@ MonoBehaviour:
     m_Bits: 0
   aggroDuration: 3
   damageTakenMultiplier: 1.5
-  armor: 15
+  armor: 18
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -15507,7 +15522,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 150
+  maxHealth: 340
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -15540,6 +15555,11 @@ MonoBehaviour:
   dropShardOnDeath: 1
   shardPickupPrefab: {fileID: 2072788503}
   shardDropOffset: {x: 0.1, y: 0}
+  dropBuffOnDeath: 1
+  buffPickupPrefab: {fileID: 6724670659867803009, guid: 0b050400190b12445b06d8150c797c2f, type: 3}
+  buffDropType: 1
+  buffStacksGranted: 1
+  buffDropOffset: {x: 0.1, y: 0}
   isStage5FinalBoss: 0
   muteBgmOnDeath: 1
   bgmFadeOutDuration: 0.5
@@ -31022,7 +31042,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: -856085545168688419, guid: 771aa59ec50627145bc23834a4680d54, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -31043,7 +31063,7 @@ Transform:
   m_GameObject: {fileID: 2072788503}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 18.61, y: -6.39, z: 0}
+  m_LocalPosition: {x: 18.603, y: -7.106, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

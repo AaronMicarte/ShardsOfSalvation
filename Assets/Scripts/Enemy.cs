@@ -165,6 +165,18 @@ public class Enemy : MonoBehaviour
     [SerializeField, Tooltip("Extra offset from the enemy's right edge where the shard spawns. +X is world-right.")]
     private Vector2 shardDropOffset = new Vector2(0.35f, 0f);
 
+    [Header("Loot - Buff Drop")]
+    [SerializeField, Tooltip("If true, this enemy can drop a buff pickup on death.")]
+    private bool dropBuffOnDeath = false;
+    [SerializeField, Tooltip("Prefab to spawn for buff pickup (should have BuffPickup component).")]
+    private GameObject buffPickupPrefab = null;
+    [SerializeField, Tooltip("Which buff this enemy drops")]
+    private BuffDropType buffDropType = BuffDropType.Damage;
+    [SerializeField, Tooltip("How many buff stacks are granted when picked up")]
+    private int buffStacksGranted = 1;
+    [SerializeField, Tooltip("Extra offset from enemy's right edge where buff pickup spawns")]
+    private Vector2 buffDropOffset = new Vector2(0.35f, 0f);
+
     [Header("Stage 5 Finale")]
     [SerializeField, Tooltip("If true, this enemy is treated as the Stage 5 final boss for finale flow.")]
     private bool isStage5FinalBoss = false;
@@ -201,6 +213,7 @@ public class Enemy : MonoBehaviour
     private bool isRecovering = false;
     private bool hasAttackedThisApproach = false;
     private bool hitAppliedThisAttack = false;
+    private bool attackHitEventInvokedThisAttack = false;
     // Index of the variant chosen for the current attack (1-based for variants, 0 = no variant)
     private int runtimeAttackIndex = 0;
 
@@ -221,6 +234,8 @@ public class Enemy : MonoBehaviour
     private bool reinforcementSpawned = false;
     // shard drop guard (avoid duplicate drop from multiple cleanup paths)
     private bool shardDropSpawned = false;
+    // buff drop guard (avoid duplicate drop from multiple cleanup paths)
+    private bool buffDropSpawned = false;
 
     void Start()
     {
@@ -375,6 +390,8 @@ public class Enemy : MonoBehaviour
     void OnValidate()
     {
         const float eps = 0.0001f;
+        buffStacksGranted = Mathf.Max(1, buffStacksGranted);
+
         if (!useBoxHitArea && attackHitRadius <= eps)
         {
             Debug.LogWarning($"{name}: attackHitRadius is zero and Use Box Hit Area is disabled — attacks may miss.");
@@ -425,6 +442,7 @@ public class Enemy : MonoBehaviour
         isRecovering = false;
         hasAttackedThisApproach = false;
         hitAppliedThisAttack = false;
+        attackHitEventInvokedThisAttack = false;
         runtimeAttackIndex = 0;
         runtimeAttackStateName = null;
         lastAttackTime = -Mathf.Infinity;
@@ -751,6 +769,7 @@ public class Enemy : MonoBehaviour
         if (singleAttackPerApproach) hasAttackedThisApproach = true;
         isRecovering = true;
         hitAppliedThisAttack = false;
+        attackHitEventInvokedThisAttack = false;
 
         // Start recovery timer (movement pause) and a watchdog to force end the attack if needed
         StartCoroutine(AttackRecovery());
@@ -817,6 +836,12 @@ public class Enemy : MonoBehaviour
     // Called from Animation Event (attack hit frame)
     public void OnAttackHit()
     {
+        if (!attackHitEventInvokedThisAttack)
+        {
+            attackHitEventInvokedThisAttack = true;
+            onAttackHit?.Invoke();
+        }
+
         // If this attack used variant 1, play its SFX at the hit frame (so sound coincides with impact)
         if (runtimeAttackIndex == 1 && attackClips != null && attackClips.Length >= 1)
         {
@@ -838,6 +863,13 @@ public class Enemy : MonoBehaviour
 
         ApplyDamage();
     }
+
+    // Alias methods to support animation events that use variant naming.
+    public void OnAttackEnd() => EndAttack();
+    public void AttackEnd() => EndAttack();
+    public void onattackend() => EndAttack();
+    public void AttackHit() => OnAttackHit();
+    public void onattackhit() => OnAttackHit();
 
     /// <summary>
     /// Animation event friendly: play the SFX for the currently selected attack variant (or default attack sound).
@@ -891,6 +923,7 @@ public class Enemy : MonoBehaviour
         movementLockedByAttack = false;
         isRecovering = false;
         hitAppliedThisAttack = false;
+        attackHitEventInvokedThisAttack = false;
         runtimeAttackStateName = null;
         runtimeAttackIndex = 0; // clear chosen variant
         SetIdle();
@@ -1271,7 +1304,11 @@ public class Enemy : MonoBehaviour
 
         Debug.Log($"Enemy '{name}' applied {damageAmount} damage to target '{(target != null ? target.name : "null")}' (attack {runtimeAttackStateName ?? attackStateName}).");
 
-        onAttackHit?.Invoke();
+        if (!attackHitEventInvokedThisAttack)
+        {
+            attackHitEventInvokedThisAttack = true;
+            onAttackHit?.Invoke();
+        }
 
         // If configured, briefly kite after a successful hit to create a hit-and-run feel
         if (kiteAfterHit)
@@ -1368,6 +1405,11 @@ public class Enemy : MonoBehaviour
         if (applyDamageCoroutine != null) { StopCoroutine(applyDamageCoroutine); applyDamageCoroutine = null; }
 
         onDeath?.Invoke();
+
+        // Attempt loot drops immediately on death so they still appear even if
+        // delayed death cleanup is interrupted by scene flow or external destroy calls.
+        TryDropShardOnDeath("Die()");
+        TryDropBuffOnDeath("Die()");
 
         // Try to spawn reinforcements immediately on death so it still happens even if
         // the death animation waits or never exits the death state.
@@ -1499,6 +1541,9 @@ public class Enemy : MonoBehaviour
         // Spawn shard drop once on death (boss use-case).
         TryDropShardOnDeath("DoDeathCleanup()");
 
+        // Spawn buff drop once on death (if configured).
+        TryDropBuffOnDeath("DoDeathCleanup()");
+
         // Try to spawn reinforcements (if configured and a spawner is assigned)
         TrySpawnReinforcements("DoDeathCleanup()");
 
@@ -1558,6 +1603,37 @@ public class Enemy : MonoBehaviour
             return;
         }
 
+        Vector3 spawnPos = GetDropSpawnPosition(shardDropOffset);
+        Instantiate(shardPickupPrefab, spawnPos, Quaternion.identity);
+        shardDropSpawned = true;
+    }
+
+    private void TryDropBuffOnDeath(string context)
+    {
+        if (buffDropSpawned) return;
+        if (!dropBuffOnDeath) return;
+
+        if (buffPickupPrefab == null)
+        {
+            Debug.LogWarning($"Enemy '{name}' buff drop skipped: buffPickupPrefab is null ({context}).");
+            return;
+        }
+
+        Vector3 spawnPos = GetDropSpawnPosition(buffDropOffset);
+        GameObject dropped = Instantiate(buffPickupPrefab, spawnPos, Quaternion.identity);
+        var buffPickup = dropped.GetComponent<BuffPickup>();
+        if (buffPickup != null)
+            buffPickup.Configure(buffDropType, Mathf.Max(1, buffStacksGranted));
+        else
+            Debug.LogWarning($"Enemy '{name}' spawned buff pickup '{dropped.name}' without BuffPickup component ({context}).");
+
+        Debug.Log($"Enemy '{name}' dropped buff '{buffDropType}' x{Mathf.Max(1, buffStacksGranted)} at {spawnPos} ({context}).");
+
+        buffDropSpawned = true;
+    }
+
+    private Vector3 GetDropSpawnPosition(Vector2 localOffset)
+    {
         float rightExtent = 0f;
         var renderers = GetComponentsInChildren<SpriteRenderer>();
         foreach (var sr in renderers)
@@ -1566,9 +1642,7 @@ public class Enemy : MonoBehaviour
             rightExtent = Mathf.Max(rightExtent, sr.bounds.max.x - transform.position.x);
         }
 
-        Vector3 spawnPos = transform.position + new Vector3(rightExtent + Mathf.Abs(shardDropOffset.x), shardDropOffset.y, 0f);
-        Instantiate(shardPickupPrefab, spawnPos, Quaternion.identity);
-        shardDropSpawned = true;
+        return transform.position + new Vector3(rightExtent + Mathf.Abs(localOffset.x), localOffset.y, 0f);
     }
 
     private float NormalizeChance01(float chance)

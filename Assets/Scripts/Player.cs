@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
+using TMPro;
 using System.Collections;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
 using UnityEngine.InputSystem;
@@ -28,6 +31,7 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("Animator trigger used to enter rage mode once (prevents AnyState re-entry loops)")] private string rageStartTriggerParam = "RageStart";
     [SerializeField, Tooltip("Animator bool parameter used to switch into rage animation graph")] private string rageBoolParam = "Raging";
     [SerializeField, Tooltip("Default rage duration in seconds when StartRageMode() is used")] private float rageDuration = 10f;
+    [SerializeField, Tooltip("Cooldown in seconds before rage can be activated again after it ends")] private float rageCooldown = 12f;
     [Space, Header("Rage Audio")]
     [SerializeField, Tooltip("Optional clip to play when rage starts")] private AudioClip rageClip = null;
     [SerializeField, Range(0f, 1f), Tooltip("Volume at which to play the rage clip")] private float rageVolume = 1f;
@@ -123,6 +127,27 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("Offset from player pivot where rage heavy-damage is centered (local space)")]
     private Vector2 rageHeavyDamageHitOffset = new Vector2(0.7f, 0f);
 
+    [Header("Buff Drops")]
+    [SerializeField, Tooltip("If true, drop-buff stacks are reset when the scene player instance awakens")]
+    private bool resetDropBuffsOnAwake = true;
+    [SerializeField, Tooltip("Extra damage multiplier gained per Damage buff stack (0.05 = +5%)")]
+    private float damageBuffPerStackPercent = 0.05f;
+    [SerializeField, Tooltip("Hard cap for total damage bonus from Damage buffs (0.25 = +25%)")]
+    private float maxTotalDamageBuffPercent = 0.25f;
+    [SerializeField, Tooltip("Maximum number of Damage buff stacks")]
+    private int maxDamageBuffStacks = 5;
+    [SerializeField, Tooltip("Additional critical damage multiplier gained per Crit Damage buff stack")]
+    private float critDamageBuffPerStack = 0.08f;
+    [SerializeField, Tooltip("Hard cap for total crit-damage bonus from buffs")]
+    private float maxTotalCritDamageBuff = 0.4f;
+    [SerializeField, Tooltip("Maximum number of Crit Damage buff stacks")]
+    private int maxCritDamageBuffStacks = 5;
+
+    private int damageBuffStacks = 0;
+    private int critDamageBuffStacks = 0;
+    private const string DamageBuffStacksPrefsKey = "Player_DamageBuffStacks";
+    private const string CritDamageBuffStacksPrefsKey = "Player_CritDamageBuffStacks";
+
     [Header("Damage Popup")]
     [SerializeField, Tooltip("Prefab used to display floating damage text (optional)")] private DamagePopup damagePopupPrefab;
     [SerializeField, Tooltip("Base world-space offset from player for popup text (positive x is in front of player)")] private Vector3 damagePopupOffset = new Vector3(0.15f, 0.65f, 0f);
@@ -144,7 +169,23 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("Key used to apply heavy-damage to the player while raging")]
     private KeyCode rageHeavyDamageKey = KeyCode.R;
     [SerializeField, Tooltip("Minimum seconds between rage heavy-damage reaction triggers to avoid animation loops")]
-    private float rageHeavyDamageReactionCooldown = 0.35f;
+    private float rageHeavyDamageReactionCooldown = 1.8f;
+
+    [Header("Rage UI Overlay")]
+    [SerializeField, Tooltip("Auto-create a left-side HUD text showing rage duration/cooldowns in every stage")]
+    private bool autoCreateRageStatusUI = true;
+    [SerializeField, Tooltip("Anchored position (top-left) for the rage status text")]
+    private Vector2 rageStatusUIAnchoredPosition = new Vector2(18f, -140f);
+    [SerializeField, Tooltip("Font size for the rage status text")]
+    private float rageStatusUIFontSize = 20f;
+    [SerializeField, Tooltip("Text color for the rage status HUD")]
+    private Color rageStatusUIColor = new Color(1f, 0.95f, 0.8f, 0.95f);
+    [SerializeField, Tooltip("Color used when rage/heavy skill is ready")]
+    private Color rageReadyColor = new Color(0.45f, 1f, 0.45f, 0.95f);
+    [SerializeField, Tooltip("Color used when a cooldown is running")]
+    private Color rageCooldownColor = new Color(1f, 0.35f, 0.35f, 0.95f);
+    [SerializeField, Tooltip("Color used when rage mode is currently active")]
+    private Color rageActiveColor = new Color(1f, 0.7f, 0.25f, 0.95f);
 
     // runtime attack hit state
     private bool attackHitApplied = false;
@@ -245,6 +286,11 @@ public class Player : MonoBehaviour
     private Coroutine rageHeavyDamageRecoverRoutine;
     private bool rageHeavyDamageInProgress;
     private float lastRageHeavyDamageReactionTime = -Mathf.Infinity;
+    private float rageCooldownReadyTime = -Mathf.Infinity;
+
+    private TextMeshProUGUI rageStatusText;
+    private GameObject rageStatusTextObject;
+    private float nextRageStatusUIRetryTime = -Mathf.Infinity;
 
     public bool IsAttacking => isAttacking;
     public bool IsDashing => isDashing;
@@ -299,12 +345,19 @@ public class Player : MonoBehaviour
     }
 
     public float GetRageRemainingSeconds() => isRaging ? Mathf.Max(0f, rageUntilTime - Time.time) : 0f;
+    public float GetRageCooldownRemainingSeconds() => isRaging ? 0f : Mathf.Max(0f, rageCooldownReadyTime - Time.time);
+    public float GetRageHeavyDamageCooldownRemainingSeconds() => Mathf.Max(0f, (lastRageHeavyDamageReactionTime + Mathf.Max(0f, rageHeavyDamageReactionCooldown)) - Time.time);
+    public float GetCurrentDamageBuffPercent() => GetDamageBuffBonusMultiplier() * 100f;
+    public float GetCurrentCritDamageBuffPercent() => GetCritDamageBuffBonus() * 100f;
 
     public void StartRageMode() => ActivateRageForSeconds(rageDuration);
 
     public void ActivateRageForSeconds(float seconds)
     {
         if (!enableRageMode) return;
+
+        if (!isRaging && Time.time < rageCooldownReadyTime)
+            return;
 
         float duration = seconds;
         if (duration <= 0f)
@@ -361,6 +414,7 @@ public class Player : MonoBehaviour
         if (!isRaging) return;
 
         isRaging = false;
+        rageCooldownReadyTime = Time.time + Mathf.Max(0f, rageCooldown);
         SetRageAnimatorState(false);
     }
 
@@ -409,6 +463,21 @@ public class Player : MonoBehaviour
         rageHeavyDamageCritMultiplier = 1.55f;
         rageHeavyDamageHitRadius = 1f;
         rageHeavyDamageHitOffset = new Vector2(0.7f, 0f);
+
+        resetDropBuffsOnAwake = true;
+        damageBuffPerStackPercent = 0.10f;
+        maxTotalDamageBuffPercent = 0.50f;
+        maxDamageBuffStacks = 5;
+        critDamageBuffPerStack = 0.12f;
+        maxTotalCritDamageBuff = 0.60f;
+        maxCritDamageBuffStacks = 5;
+
+        autoCreateRageStatusUI = true;
+        critPopupColor = new Color(1f, 0.85f, 0.2f, 1f);
+        damagePopupColor = new Color(1f, 1f, 1f, 1f);
+
+        rageHeavyDamageReactionCooldown = 1.8f;
+        rageCooldown = 12f;
     }
 
     private IEnumerator RageTimerRoutine()
@@ -451,6 +520,15 @@ public class Player : MonoBehaviour
     {
         ApplyGlobalCombatPreset();
 
+        // Keep core combat HUD styling consistent across all stages.
+        autoCreateRageStatusUI = true;
+        critPopupColor = new Color(1f, 0.85f, 0.2f, 1f);
+        damagePopupColor = new Color(1f, 1f, 1f, 1f);
+
+        bool loadedSavedBuffs = LoadSavedDropBuffStacks();
+        if (!loadedSavedBuffs && resetDropBuffsOnAwake)
+            ResetDropBuffStacks();
+
         rb = GetComponent<Rigidbody2D>();
         initialScale = transform.localScale;
         // make sure our facing tracker matches the sprite's initial orientation
@@ -484,6 +562,7 @@ public class Player : MonoBehaviour
             playerHealth.onHit.AddListener(TriggerRageHeavyDamageReaction);
 
         CacheAnimatorParameters();
+        EnsureRageStatusUI();
     }
 
     void OnDestroy()
@@ -491,6 +570,31 @@ public class Player : MonoBehaviour
         if (playerHealth != null && autoTriggerRageHeavyDamageOnHit)
             playerHealth.onHit.RemoveListener(TriggerRageHeavyDamageReaction);
     }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Rebind/rebuild HUD references after stage loads.
+        EnsureRageStatusUI();
+        UpdateRageStatusUI();
+    }
+
+#if UNITY_EDITOR
+    void OnApplicationQuit()
+    {
+        // In-editor play stop should always reset run state.
+        ResetSavedDropBuffStacks();
+    }
+#endif
 
 #if UNITY_EDITOR
     void OnValidate()
@@ -518,6 +622,13 @@ public class Player : MonoBehaviour
         skill1DamageMax = Mathf.Max(skill1Damage, skill1DamageMax);
         rageHeavyDamageDamage = Mathf.Max(1, rageHeavyDamageDamage);
         rageHeavyDamageDamageMax = Mathf.Max(rageHeavyDamageDamage, rageHeavyDamageDamageMax);
+
+        damageBuffPerStackPercent = Mathf.Max(0f, damageBuffPerStackPercent);
+        maxTotalDamageBuffPercent = Mathf.Max(0f, maxTotalDamageBuffPercent);
+        maxDamageBuffStacks = Mathf.Max(1, maxDamageBuffStacks);
+        critDamageBuffPerStack = Mathf.Max(0f, critDamageBuffPerStack);
+        maxTotalCritDamageBuff = Mathf.Max(0f, maxTotalCritDamageBuff);
+        maxCritDamageBuffStacks = Mathf.Max(1, maxCritDamageBuffStacks);
     }
 #endif
 
@@ -536,6 +647,21 @@ public class Player : MonoBehaviour
 
         if (isRaging)
             SetRageAnimatorState(true);
+
+        bool needsRageHudRebuild = rageStatusText == null || rageStatusTextObject == null;
+        if (autoCreateRageStatusUI && needsRageHudRebuild && Time.time >= nextRageStatusUIRetryTime)
+        {
+            rageStatusText = null;
+            rageStatusTextObject = null;
+            EnsureRageStatusUI();
+            nextRageStatusUIRetryTime = Time.time + 1f;
+        }
+        else if (rageStatusTextObject != null && !rageStatusTextObject.activeSelf)
+        {
+            rageStatusTextObject.SetActive(true);
+        }
+
+        UpdateRageStatusUI();
 
         ReadInput();
         HandleAttackInput();
@@ -938,6 +1064,18 @@ public class Player : MonoBehaviour
         return baseSpeed * Mathf.Max(0f, rageMoveSpeedMultiplier);
     }
 
+    private float GetDamageBuffBonusMultiplier()
+    {
+        float fromStacks = Mathf.Max(0, damageBuffStacks) * Mathf.Max(0f, damageBuffPerStackPercent);
+        return Mathf.Min(Mathf.Max(0f, maxTotalDamageBuffPercent), fromStacks);
+    }
+
+    private float GetCritDamageBuffBonus()
+    {
+        float fromStacks = Mathf.Max(0, critDamageBuffStacks) * Mathf.Max(0f, critDamageBuffPerStack);
+        return Mathf.Min(Mathf.Max(0f, maxTotalCritDamageBuff), fromStacks);
+    }
+
     private int RollDamageRange(int minDamage, int maxDamage)
     {
         int min = Mathf.Max(1, minDamage);
@@ -948,15 +1086,17 @@ public class Player : MonoBehaviour
 
     private int GetEffectiveSkill1DamageCeiling()
     {
-        float m = isRaging ? Mathf.Max(0f, rageDamageMultiplier) : 1f;
-        return Mathf.Max(1, Mathf.RoundToInt(Mathf.Max(skill1Damage, skill1DamageMax) * m));
+        float rageMult = isRaging ? Mathf.Max(0f, rageDamageMultiplier) : 1f;
+        float buffMult = 1f + GetDamageBuffBonusMultiplier();
+        return Mathf.Max(1, Mathf.RoundToInt(Mathf.Max(skill1Damage, skill1DamageMax) * rageMult * buffMult));
     }
 
     private int GetEffectiveAttackDamage()
     {
         int rolledBaseDamage = RollDamageRange(attackDamage, attackDamageMax);
-        float m = isRaging ? Mathf.Max(0f, rageDamageMultiplier) : 1f;
-        return Mathf.Max(1, Mathf.RoundToInt(rolledBaseDamage * m));
+        float rageMult = isRaging ? Mathf.Max(0f, rageDamageMultiplier) : 1f;
+        float buffMult = 1f + GetDamageBuffBonusMultiplier();
+        return Mathf.Max(1, Mathf.RoundToInt(rolledBaseDamage * rageMult * buffMult));
     }
 
     private float GetEffectiveAttackPercent()
@@ -973,15 +1113,16 @@ public class Player : MonoBehaviour
 
     private float GetEffectiveAttackCritMultiplier()
     {
-        float m = isRaging ? Mathf.Max(0f, rageCritMultiplierMultiplier) : 1f;
-        return Mathf.Max(1f, attackCritMultiplier * m);
+        float rageMult = isRaging ? Mathf.Max(0f, rageCritMultiplierMultiplier) : 1f;
+        return Mathf.Max(1f, (attackCritMultiplier * rageMult) + GetCritDamageBuffBonus());
     }
 
     private int GetEffectiveSkill1Damage()
     {
         int rolledBaseDamage = RollDamageRange(skill1Damage, skill1DamageMax);
-        float m = isRaging ? Mathf.Max(0f, rageDamageMultiplier) : 1f;
-        return Mathf.Max(1, Mathf.RoundToInt(rolledBaseDamage * m));
+        float rageMult = isRaging ? Mathf.Max(0f, rageDamageMultiplier) : 1f;
+        float buffMult = 1f + GetDamageBuffBonusMultiplier();
+        return Mathf.Max(1, Mathf.RoundToInt(rolledBaseDamage * rageMult * buffMult));
     }
 
     private float GetEffectiveSkill1CritChance()
@@ -992,8 +1133,8 @@ public class Player : MonoBehaviour
 
     private float GetEffectiveSkill1CritMultiplier()
     {
-        float m = isRaging ? Mathf.Max(0f, rageCritMultiplierMultiplier) : 1f;
-        return Mathf.Max(1f, skill1CritMultiplier * m);
+        float rageMult = isRaging ? Mathf.Max(0f, rageCritMultiplierMultiplier) : 1f;
+        return Mathf.Max(1f, (skill1CritMultiplier * rageMult) + GetCritDamageBuffBonus());
     }
 
     private float GetEffectiveSkill1HitRadius()
@@ -1012,8 +1153,11 @@ public class Player : MonoBehaviour
     {
         int effectiveSkill1Ceiling = GetEffectiveSkill1DamageCeiling();
         int rolledHeavy = RollDamageRange(rageHeavyDamageDamage, rageHeavyDamageDamageMax);
+        float rageMult = isRaging ? Mathf.Max(0f, rageDamageMultiplier) : 1f;
+        float buffMult = 1f + GetDamageBuffBonusMultiplier();
+        int effectiveHeavy = Mathf.Max(1, Mathf.RoundToInt(rolledHeavy * rageMult * buffMult));
         // Guarantee heavy damage is always stronger than Skill1 by at least 1.
-        return Mathf.Max(rolledHeavy, effectiveSkill1Ceiling + 1);
+        return Mathf.Max(effectiveHeavy, effectiveSkill1Ceiling + 1);
     }
 
     private float GetEffectiveRageHeavyDamageCritChance()
@@ -1024,7 +1168,93 @@ public class Player : MonoBehaviour
 
     private float GetEffectiveRageHeavyDamageCritMultiplier()
     {
-        return Mathf.Max(1f, rageHeavyDamageCritMultiplier);
+        return Mathf.Max(1f, rageHeavyDamageCritMultiplier + GetCritDamageBuffBonus());
+    }
+
+    public bool TryApplyDropBuff(BuffDropType buffType, int stackAmount = 1)
+    {
+        int add = Mathf.Max(1, stackAmount);
+
+        switch (buffType)
+        {
+            case BuffDropType.Damage:
+                {
+                    float beforeBonus = GetDamageBuffBonusMultiplier();
+                    int before = damageBuffStacks;
+                    damageBuffStacks = Mathf.Min(Mathf.Max(1, maxDamageBuffStacks), damageBuffStacks + add);
+                    bool applied = damageBuffStacks > before;
+                    if (applied)
+                    {
+                        SaveDropBuffStacks();
+                        float gainedPercent = Mathf.Max(0f, (GetDamageBuffBonusMultiplier() - beforeBonus) * 100f);
+                        float shownPercent = gainedPercent > 0f && gainedPercent < 0.1f ? 0.1f : gainedPercent;
+                        SpawnDamagePopup($"Damage +{shownPercent:0.##}%", percentPopupColor);
+                        Debug.Log($"Player '{name}' picked Damage buff: stacks {before} -> {damageBuffStacks} (bonus +{GetDamageBuffBonusMultiplier() * 100f:0.#}%).");
+                    }
+                    return applied;
+                }
+            case BuffDropType.CritDamage:
+                {
+                    float beforeBonus = GetCritDamageBuffBonus();
+                    int before = critDamageBuffStacks;
+                    critDamageBuffStacks = Mathf.Min(Mathf.Max(1, maxCritDamageBuffStacks), critDamageBuffStacks + add);
+                    bool applied = critDamageBuffStacks > before;
+                    if (applied)
+                    {
+                        SaveDropBuffStacks();
+                        float gainedPercent = Mathf.Max(0f, (GetCritDamageBuffBonus() - beforeBonus) * 100f);
+                        float shownPercent = gainedPercent > 0f && gainedPercent < 0.1f ? 0.1f : gainedPercent;
+                        SpawnDamagePopup($"Crit DMG +{shownPercent:0.##}%", critPopupColor);
+                        Debug.Log($"Player '{name}' picked Crit Damage buff: stacks {before} -> {critDamageBuffStacks} (bonus +{GetCritDamageBuffBonus():0.##}x).");
+                    }
+                    return applied;
+                }
+            default:
+                return false;
+        }
+    }
+
+    public void ResetDropBuffStacks()
+    {
+        damageBuffStacks = 0;
+        critDamageBuffStacks = 0;
+        SaveDropBuffStacks();
+    }
+
+    public int GetDamageBuffStacks() => damageBuffStacks;
+    public int GetCritDamageBuffStacks() => critDamageBuffStacks;
+
+    public static void SaveActiveDropBuffStacksForRetry()
+    {
+        var player = FindFirstObjectByType<Player>();
+        if (player != null)
+            player.SaveDropBuffStacks();
+    }
+
+    public static void ResetSavedDropBuffStacks()
+    {
+        PlayerPrefs.DeleteKey(DamageBuffStacksPrefsKey);
+        PlayerPrefs.DeleteKey(CritDamageBuffStacksPrefsKey);
+        PlayerPrefs.Save();
+    }
+
+    private void SaveDropBuffStacks()
+    {
+        PlayerPrefs.SetInt(DamageBuffStacksPrefsKey, Mathf.Max(0, damageBuffStacks));
+        PlayerPrefs.SetInt(CritDamageBuffStacksPrefsKey, Mathf.Max(0, critDamageBuffStacks));
+        PlayerPrefs.Save();
+    }
+
+    private bool LoadSavedDropBuffStacks()
+    {
+        bool hasDamage = PlayerPrefs.HasKey(DamageBuffStacksPrefsKey);
+        bool hasCrit = PlayerPrefs.HasKey(CritDamageBuffStacksPrefsKey);
+        if (!hasDamage && !hasCrit)
+            return false;
+
+        damageBuffStacks = Mathf.Clamp(PlayerPrefs.GetInt(DamageBuffStacksPrefsKey, 0), 0, Mathf.Max(1, maxDamageBuffStacks));
+        critDamageBuffStacks = Mathf.Clamp(PlayerPrefs.GetInt(CritDamageBuffStacksPrefsKey, 0), 0, Mathf.Max(1, maxCritDamageBuffStacks));
+        return true;
     }
 
     private float GetEffectiveRageHeavyDamageHitRadius()
@@ -1364,7 +1594,7 @@ public class Player : MonoBehaviour
                     int dmg = GetEffectiveAttackDamage();
                     if (isCrit) dmg = Mathf.Max(1, Mathf.RoundToInt(dmg * critMult));
                     e.TakeDamage(dmg);
-                    SpawnDamagePopup(dmg.ToString(), isCrit ? critPopupColor : damagePopupColor);
+                    SpawnDamagePopup(isCrit ? $"CRIT {dmg}" : dmg.ToString(), isCrit ? critPopupColor : damagePopupColor);
                 }
                 hitAny = true;
             }
@@ -1434,7 +1664,7 @@ public class Player : MonoBehaviour
                 int dmg = GetEffectiveSkill1Damage();
                 if (isCrit) dmg = Mathf.Max(1, Mathf.RoundToInt(dmg * critMult));
                 e.TakeDamage(dmg);
-                SpawnDamagePopup(dmg.ToString(), isCrit ? critPopupColor : damagePopupColor);
+                SpawnDamagePopup(isCrit ? $"CRIT {dmg}" : dmg.ToString(), isCrit ? critPopupColor : damagePopupColor);
             }
         }
     }
@@ -1470,7 +1700,7 @@ public class Player : MonoBehaviour
             int dmg = GetEffectiveRageHeavyDamage();
             if (isCrit) dmg = Mathf.Max(1, Mathf.RoundToInt(dmg * critMult));
             e.TakeDamage(dmg);
-            SpawnDamagePopup(dmg.ToString(), isCrit ? critPopupColor : damagePopupColor);
+            SpawnDamagePopup(isCrit ? $"CRIT {dmg}" : dmg.ToString(), isCrit ? critPopupColor : damagePopupColor);
         }
     }
 
@@ -1587,6 +1817,109 @@ public class Player : MonoBehaviour
             ApplyAttackToEnemies();
 
         applyAttackCoroutine = null;
+    }
+
+    private void EnsureRageStatusUI()
+    {
+        if (!autoCreateRageStatusUI) return;
+
+        Canvas targetCanvas = FindPreferredHudCanvas();
+        if (targetCanvas == null)
+        {
+            var canvasGo = new GameObject("GameplayStatusCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            targetCanvas = canvasGo.GetComponent<Canvas>();
+            targetCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            var scaler = canvasGo.GetComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            scaler.matchWidthOrHeight = 0.5f;
+        }
+        else if (!targetCanvas.gameObject.activeSelf)
+        {
+            targetCanvas.gameObject.SetActive(true);
+        }
+
+        TextMeshProUGUI targetText = null;
+        var texts = targetCanvas.GetComponentsInChildren<TextMeshProUGUI>(true);
+        for (int i = 0; i < texts.Length; i++)
+        {
+            var candidate = texts[i];
+            if (candidate == null || candidate.name != "RageStatusText")
+                continue;
+
+            if (targetText == null)
+            {
+                targetText = candidate;
+            }
+            else
+            {
+                Destroy(candidate.gameObject);
+            }
+        }
+
+        if (targetText == null)
+        {
+            var go = new GameObject("RageStatusText", typeof(RectTransform), typeof(TextMeshProUGUI));
+            go.transform.SetParent(targetCanvas.transform, false);
+            targetText = go.GetComponent<TextMeshProUGUI>();
+        }
+        else if (!targetText.gameObject.activeSelf)
+        {
+            targetText.gameObject.SetActive(true);
+        }
+
+        var rect = targetText.rectTransform;
+        rect.anchorMin = new Vector2(0f, 1f);
+        rect.anchorMax = new Vector2(0f, 1f);
+        rect.pivot = new Vector2(0f, 1f);
+        rect.anchoredPosition = rageStatusUIAnchoredPosition;
+        rect.sizeDelta = new Vector2(520f, 180f);
+
+        rageStatusText = targetText;
+        rageStatusText.fontSize = Mathf.Max(12f, rageStatusUIFontSize);
+        rageStatusText.alignment = TextAlignmentOptions.TopLeft;
+        rageStatusText.color = rageStatusUIColor;
+        rageStatusText.textWrappingMode = TextWrappingModes.NoWrap;
+        rageStatusText.raycastTarget = false;
+
+        rageStatusTextObject = targetText.gameObject;
+        UpdateRageStatusUI();
+    }
+
+    private Canvas FindPreferredHudCanvas()
+    {
+        var named = GameObject.Find("GameplayStatusCanvas");
+        if (named != null)
+            return named.GetComponent<Canvas>();
+
+        return null;
+    }
+
+    private void UpdateRageStatusUI()
+    {
+        if (rageStatusText == null) return;
+
+        float rageRemaining = GetRageRemainingSeconds();
+        float rageCdRemaining = GetRageCooldownRemainingSeconds();
+        float heavyCdRemaining = GetRageHeavyDamageCooldownRemainingSeconds();
+        float damageBuffPercent = GetCurrentDamageBuffPercent();
+        float critBuffPercent = GetCurrentCritDamageBuffPercent();
+
+        string rageState = isRaging ? $"ACTIVE ({rageRemaining:0.0}s left)" : (rageCdRemaining > 0f ? $"COOLDOWN {rageCdRemaining:0.0}s" : "READY");
+        string durationText = isRaging ? $"{rageRemaining:0.0}s" : "0.0s";
+        string heavyCdText = heavyCdRemaining > 0f ? $"{heavyCdRemaining:0.00}s" : "Ready";
+
+        string rageStateColorHex = ColorUtility.ToHtmlStringRGBA(isRaging ? rageActiveColor : (rageCdRemaining > 0f ? rageCooldownColor : rageReadyColor));
+        string heavyStateColorHex = ColorUtility.ToHtmlStringRGBA(heavyCdRemaining > 0f ? rageCooldownColor : rageReadyColor);
+        string damageBuffColorHex = ColorUtility.ToHtmlStringRGBA(damageBuffPercent > 0f ? rageReadyColor : rageCooldownColor);
+        string critBuffColorHex = ColorUtility.ToHtmlStringRGBA(critBuffPercent > 0f ? rageReadyColor : rageCooldownColor);
+
+        rageStatusText.text =
+            $"Rage Mode: <color=#{rageStateColorHex}>{rageState}</color>\n" +
+            $"Rage Duration: {durationText}\n" +
+            $"Heavy Damage CD: <color=#{heavyStateColorHex}>{heavyCdText}</color>\n" +
+            $"Damage Buff: <color=#{damageBuffColorHex}>+{damageBuffPercent:0.#}% ({damageBuffStacks}/{maxDamageBuffStacks})</color>\n" +
+            $"Crit Buff: <color=#{critBuffColorHex}>+{critBuffPercent:0.#}% ({critDamageBuffStacks}/{maxCritDamageBuffStacks})</color>";
     }
 
     void OnDrawGizmosSelected()

@@ -60,6 +60,8 @@ public class DeathUIController : MonoBehaviour
 
     void OnRetryPressed()
     {
+        // Keep current buff stacks when retrying the same stage.
+        Player.SaveActiveDropBuffStacksForRetry();
         // Reset saved HP so the player starts full on retry
         PlayerHealth.ResetSavedHP();
         // reload current active scene
@@ -68,6 +70,8 @@ public class DeathUIController : MonoBehaviour
 
     void OnMainMenuPressed()
     {
+        // Returning to menu starts a fresh run (no saved buffs).
+        Player.ResetSavedDropBuffStacks();
         // go to main menu scene
         SceneManager.LoadScene("MainMenu");
     }
