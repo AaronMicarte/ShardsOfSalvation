@@ -204,7 +204,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   target: {fileID: 0}
   detectionRadius: 8
-  attackRange: 1.7
+  attackRange: 0.9
   moveSpeed: 2
   useFacingFlip: 1
   returnToStart: 0
@@ -219,8 +219,12 @@ MonoBehaviour:
   damageAmount: 1
   maxAttackDuration: 0
   attackHitsOutOfRange: 0
+  attackVariantConfigs: []
+  useBoxHitArea: 0
+  attackHitBoxSize: {x: 1.6, y: 0.8}
+  lockMovementWhileAttacking: 1
   attackHitOffset: {x: 0.6, y: 0}
-  attackHitRadius: 1
+  attackHitRadius: 0.3
   attackTargetMask:
     serializedVersion: 2
     m_Bits: 64
@@ -237,6 +241,7 @@ MonoBehaviour:
   playerLowHPThreshold: 0.5
   kiteAfterHit: 0
   kiteAfterHitDuration: 0.9
+  kiteBurstDuration: 1
   useLineOfSight: 1
   lineOfSightBlockingMask:
     serializedVersion: 2
@@ -258,6 +263,8 @@ MonoBehaviour:
   audioSource: {fileID: 0}
   attackClips: []
   attackVolume: 1
+  attackSfxViaAnimationEvents: 0
+  deathSfxViaAnimationEvents: 0
   destroyOnDeath: 1
   onDeath:
     m_PersistentCalls:
@@ -277,6 +284,13 @@ MonoBehaviour:
   reinforcementDelay: 0.15
   reinforcementSpawner: {fileID: 0}
   reinforcementDebug: 0
+  dropShardOnDeath: 0
+  shardPickupPrefab: {fileID: 0}
+  shardDropOffset: {x: 0.35, y: 0}
+  isStage5FinalBoss: 0
+  muteBgmOnDeath: 1
+  bgmFadeOutDuration: 0.5
+  bgmSourcesToMute: []
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0

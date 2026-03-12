@@ -163,7 +163,7 @@ MonoBehaviour:
   - text: Each boss wears a glowing shard. Kill them and the shard drops, humming
       like it wants me to pick it up.
     background: {fileID: 8598540622181948073, guid: ac1fb8ef7ee865345a418763d46f1a6c, type: 3}
-    portrait: {fileID: -2215437315061986277, guid: 226e4089b97b1724080cf7c9c5697085, type: 3}
+    portrait: {fileID: -8410463437239773735, guid: e6f93154c1f72044daee1f7595b1d2df, type: 3}
   - text: Whatever these shards are, they feel like the key to fixing the city and
       ending this nightmare.
     background: {fileID: 8598540622181948073, guid: ac1fb8ef7ee865345a418763d46f1a6c, type: 3}

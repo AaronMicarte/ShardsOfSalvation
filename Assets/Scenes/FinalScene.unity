@@ -173,7 +173,7 @@ MonoBehaviour:
       bobords, again.
     background: {fileID: 8187432548064063880, guid: 24bb01f528050134ba37297809df14ea, type: 3}
     portrait: {fileID: -1200702750826362652, guid: d91d653e8bdbb5c4b9e3eff7cd6fede6, type: 3}
-  - text: Shard of Salvation. Time for real life, again.
+  - text: Shards of Salvation. Time for real life, again.
     background: {fileID: 1600940695416777375, guid: 905587022be53d04f8fcc8a5a33dcf4f, type: 3}
     portrait: {fileID: -1200702750826362652, guid: d91d653e8bdbb5c4b9e3eff7cd6fede6, type: 3}
   typingDelay: 0.06
