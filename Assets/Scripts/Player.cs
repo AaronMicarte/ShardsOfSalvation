@@ -13,6 +13,10 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Player : MonoBehaviour
 {
+    [Header("Global Combat Preset")]
+    [SerializeField, Tooltip("When enabled, combat/rage values are force-applied from script so all floors use the same player tuning")]
+    private bool forceGlobalCombatPreset = true;
+
     [Header("Movement")]
     [SerializeField, Tooltip("Horizontal move speed")] private float moveSpeed = 8f;
     [SerializeField, Tooltip("Jump impulse force")] private float jumpForce = 8f;
@@ -30,9 +34,9 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("If >0, stop the rage clip after this many seconds (useful for looping or long clips)")] private float rageSoundMaxDuration = 0f;
     [SerializeField, Tooltip("Fade-out duration when the rage sound stops (set 0 for instant)")] private float rageSoundFadeDuration = 0.5f;
     [SerializeField, Tooltip("Multiplier applied to movement speed while rage is active")] private float rageMoveSpeedMultiplier = 1.35f;
-    [SerializeField, Tooltip("Multiplier applied to all damage while rage is active (basic + skill1 + percent)")] private float rageDamageMultiplier = 2f;
-    [SerializeField, Tooltip("Multiplier applied to crit chance while rage is active")] private float rageCritChanceMultiplier = 2f;
-    [SerializeField, Tooltip("Multiplier applied to crit damage multiplier while rage is active")] private float rageCritMultiplierMultiplier = 2f;
+    [SerializeField, Tooltip("Multiplier applied to all damage while rage is active (basic + skill1 + percent)")] private float rageDamageMultiplier = 1.5f;
+    [SerializeField, Tooltip("Multiplier applied to crit chance while rage is active")] private float rageCritChanceMultiplier = 1.5f;
+    [SerializeField, Tooltip("Multiplier applied to crit damage multiplier while rage is active")] private float rageCritMultiplierMultiplier = 1.5f;
     [SerializeField, Tooltip("Multiplier applied to Skill1 hit radius while rage is active")] private float rageSkill1HitRadiusMultiplier = 2f;
     [SerializeField, Tooltip("Multiplier applied to Skill1 forward hit range (offset X) while rage is active")] private float rageSkill1RangeMultiplier = 2.2f;
     [SerializeField, Tooltip("Multiplier applied to dash distance while rage is active")] private float rageDashDistanceMultiplier = 1.4f;
@@ -86,31 +90,30 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("Animator trigger name used to start the attack animation")] private string attackTrigger = "Attack";
     [SerializeField, Tooltip("Animator bool parameter name to set while attacking (optional)")] private string attackBoolParam = "isAttacking";
     [SerializeField, Tooltip("Duration (s) to lock movement during attacks. If 0, code will wait until the animator exits the 'attack' state.")] private float attackDuration = 0.4f;
-    [SerializeField, Tooltip("Seconds between allowed basic attacks (cooldown). Default: 0.5s")] private float attackCooldown = 0.5f;
-    [SerializeField, Tooltip("Damage dealt by player's basic attack (flat)")] private int attackDamage = 8;
+    [SerializeField, Tooltip("Seconds between allowed basic attacks (cooldown). Default: 0.5s")] private float attackCooldown = 0.8f;
+    [SerializeField, Tooltip("Damage dealt by player's basic attack (flat)")] private int attackDamage = 12;
     [SerializeField, Tooltip("If true, player's basic attack uses percentage of enemy max HP instead of flat damage (use Grounded Mode carefully)")] private bool attackUsesPercent = false;
     [SerializeField, Tooltip("Percent of enemy max HP when attack uses percent (0..1)")] private float attackPercent = 0.25f;
-    [SerializeField, Tooltip("Chance (0..1) for attack to be critical")] private float attackCritChance = 0.05f;
-    [SerializeField, Tooltip("Critical damage multiplier (applied to flat damage or percent)")] private float attackCritMultiplier = 1.5f;
+    [SerializeField, Tooltip("Chance (0..1) for attack to be critical")] private float attackCritChance = 0.13f;
+    [SerializeField, Tooltip("Critical damage multiplier (applied to flat damage or percent)")] private float attackCritMultiplier = 1.3f;
     [SerializeField, Tooltip("Radius used to detect enemies for attack hit")] private float attackHitRadius = 0.5f;
     [SerializeField, Tooltip("Offset from player pivot where attack is centered (local space)")] private Vector2 attackHitOffset = new Vector2(0.6f, 0f);
     [SerializeField, Tooltip("Layer mask used to detect enemies")] private LayerMask enemyLayer;
 
     [Header("Skill1 Combat")]
-    [SerializeField, Tooltip("Damage dealt by Skill1 attack")] private int skill1Damage = 15;
+    [SerializeField, Tooltip("Damage dealt by Skill1 attack")] private int skill1Damage = 22;
     [SerializeField, Tooltip("Chance (0..1) for Skill1 to be critical")] private float skill1CritChance = 0.1f;
-    [SerializeField, Tooltip("Critical damage multiplier for Skill1")] private float skill1CritMultiplier = 1.5f;
+    [SerializeField, Tooltip("Critical damage multiplier for Skill1")] private float skill1CritMultiplier = 1.2f;
     [SerializeField, Tooltip("Radius used to detect enemies for Skill1 hit")] private float skill1HitRadius = 0.8f;
     [SerializeField, Tooltip("Offset from player pivot where Skill1 is centered (local space)")] private Vector2 skill1HitOffset = new Vector2(0.6f, 0f);
 
     [Header("Rage Heavy Damage Combat")]
     [SerializeField, Tooltip("Base damage dealt by rage heavy-damage hit. Runtime enforces this stays above Skill1 damage.")]
-    private int rageHeavyDamageDamage = 25;
+    private int rageHeavyDamageDamage = 32;
     [SerializeField, Tooltip("Chance (0..1) for rage heavy-damage to crit")]
     private float rageHeavyDamageCritChance = 0.15f;
-    [SerializeField, Tooltip("Critical damage multiplier for rage heavy-damage; kept at 0.8 per design")]
-    // user requested a fixed 0.8 multiplier - OnValidate ensures editor shows 0.8 even if previously serialized higher
-    private float rageHeavyDamageCritMultiplier = 0.8f;
+    [SerializeField, Tooltip("Critical damage multiplier for rage heavy-damage")]
+    private float rageHeavyDamageCritMultiplier = 1.55f;
     [SerializeField, Tooltip("Radius used to detect enemies for rage heavy-damage")]
     private float rageHeavyDamageHitRadius = 1.0f;
     [SerializeField, Tooltip("Offset from player pivot where rage heavy-damage is centered (local space)")]
@@ -364,6 +367,43 @@ public class Player : MonoBehaviour
         Debug.Log($"Player '{name}': move speed overridden to {speed} for {seconds}s (until {moveSpeedOverrideUntil:F2})");
     }
 
+    private void ApplyGlobalCombatPreset()
+    {
+        if (!forceGlobalCombatPreset) return;
+
+        // Apply one shared combat tuning across all scenes/floors.
+        attackDuration = 0.4f;
+        attackCooldown = 0.8f;
+        attackDamage = 12;
+        attackUsesPercent = false;
+        attackPercent = 0f;
+        attackCritChance = 0.13f;
+        attackCritMultiplier = 1.3f;
+        attackHitRadius = 0.5f;
+        attackHitOffset = new Vector2(0.6f, 0f);
+
+        skill1Damage = 22;
+        skill1CritChance = 0.15f;
+        skill1CritMultiplier = 1.2f;
+        skill1HitRadius = 0.8f;
+        skill1HitOffset = new Vector2(0.6f, 0f);
+
+        rageMoveSpeedMultiplier = 1.35f;
+        rageDamageMultiplier = 1.5f;
+        rageCritChanceMultiplier = 1.5f;
+        rageCritMultiplierMultiplier = 1.5f;
+        rageSkill1HitRadiusMultiplier = 2f;
+        rageSkill1RangeMultiplier = 2.2f;
+        rageDashDistanceMultiplier = 1.4f;
+        rageDashDurationMultiplier = 1.2f;
+
+        rageHeavyDamageDamage = 32;
+        rageHeavyDamageCritChance = 0.22f;
+        rageHeavyDamageCritMultiplier = 1.55f;
+        rageHeavyDamageHitRadius = 1f;
+        rageHeavyDamageHitOffset = new Vector2(0.7f, 0f);
+    }
+
     private IEnumerator RageTimerRoutine()
     {
         while (isRaging && Time.time < rageUntilTime)
@@ -402,6 +442,8 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
+        ApplyGlobalCombatPreset();
+
         rb = GetComponent<Rigidbody2D>();
         initialScale = transform.localScale;
         // make sure our facing tracker matches the sprite's initial orientation
@@ -447,6 +489,7 @@ public class Player : MonoBehaviour
     void OnValidate()
     {
         if (Application.isPlaying) return;
+        ApplyGlobalCombatPreset();
         var col = GetComponent<Collider2D>();
         if (col != null && useBoxGroundCheck)
         {
@@ -458,9 +501,9 @@ public class Player : MonoBehaviour
                 groundCheck.position = new Vector3(b.center.x, b.min.y + groundCheckBoxSize.y * 0.5f, transform.position.z);
         }
 
-        // enforce the heavy-damage crit multiplier stays at 0.8 so old serialized values don't linger
-        if (rageHeavyDamageCritMultiplier != 0.8f)
-            rageHeavyDamageCritMultiplier = 0.8f;
+        if (attackCritMultiplier < 1f) attackCritMultiplier = 1f;
+        if (skill1CritMultiplier < 1f) skill1CritMultiplier = 1f;
+        if (rageHeavyDamageCritMultiplier < 1f) rageHeavyDamageCritMultiplier = 1f;
     }
 #endif
 
@@ -951,9 +994,7 @@ public class Player : MonoBehaviour
 
     private float GetEffectiveRageHeavyDamageCritMultiplier()
     {
-        // return the configured multiplier directly; do not enforce a minimum of 1.
-        // this makes the crit multiplier equal to whatever the field is (0.8 by default).
-        return rageHeavyDamageCritMultiplier;
+        return Mathf.Max(1f, rageHeavyDamageCritMultiplier);
     }
 
     private float GetEffectiveRageHeavyDamageHitRadius()
