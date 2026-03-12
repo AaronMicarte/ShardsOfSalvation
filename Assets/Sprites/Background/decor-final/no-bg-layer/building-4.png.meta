@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 5b64a838a2cd5c6418209f95f666bfff
+guid: dbb582be88d88cc4d95bdf5669052c93
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7240926315137865297
-    second: rocks-mountain_0
+      213: 5209567532386736664
+    second: building-4_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 10
+  spritePixelsToUnits: 40
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -75,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: rocks-mountain_0
+      name: building-4_0
       rect:
         serializedVersion: 2
-        x: 9
+        x: 0
         y: 0
-        width: 581
-        height: 148
+        width: 347
+        height: 704
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 156129a9e10fc7460800000000000000
-      internalID: 7240926315137865297
+      spriteID: 81ad159b11a1c4840800000000000000
+      internalID: 5209567532386736664
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      rocks-mountain_0: 7240926315137865297
+      building-4_0: 5209567532386736664
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

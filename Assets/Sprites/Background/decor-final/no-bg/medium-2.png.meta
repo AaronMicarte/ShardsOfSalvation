@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 5b64a838a2cd5c6418209f95f666bfff
+guid: 7f882ff35ba226d4cb528429f910cabb
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7240926315137865297
-    second: rocks-mountain_0
+      213: -8107809424258942014
+    second: medium-2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 10
+  spritePixelsToUnits: 50
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: rocks-mountain_0
+      name: medium-2_0
       rect:
         serializedVersion: 2
-        x: 9
-        y: 0
-        width: 581
-        height: 148
+        x: 23
+        y: 23
+        width: 250
+        height: 538
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 156129a9e10fc7460800000000000000
-      internalID: 7240926315137865297
+      spriteID: 2cb3b7029464b7f80800000000000000
+      internalID: -8107809424258942014
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      rocks-mountain_0: 7240926315137865297
+      medium-2_0: -8107809424258942014
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
