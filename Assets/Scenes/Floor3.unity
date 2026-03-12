@@ -7810,6 +7810,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46322f8828b6b4942983fbf73887a1b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+  forceGlobalCombatPreset: 1
   moveSpeed: 5
   jumpForce: 5
   airControl: 1
@@ -7823,9 +7824,9 @@ MonoBehaviour:
   rageSoundMaxDuration: 1
   rageSoundFadeDuration: 0.5
   rageMoveSpeedMultiplier: 1.35
-  rageDamageMultiplier: 2
-  rageCritChanceMultiplier: 2
-  rageCritMultiplierMultiplier: 2
+  rageDamageMultiplier: 1.5
+  rageCritChanceMultiplier: 1.5
+  rageCritMultiplierMultiplier: 1.5
   rageSkill1HitRadiusMultiplier: 2
   rageSkill1RangeMultiplier: 2.2
   rageDashDistanceMultiplier: 1.4
@@ -7867,24 +7868,27 @@ MonoBehaviour:
   attackBoolParam: isAttacking
   attackDuration: 0.4
   attackCooldown: 0.8
-  attackDamage: 8
-  attackUsesPercent: 1
-  attackPercent: 0.12
-  attackCritChance: 0.1
-  attackCritMultiplier: 0.6
+  attackDamage: 12
+  attackDamageMax: 15
+  attackUsesPercent: 0
+  attackPercent: 0
+  attackCritChance: 0.13
+  attackCritMultiplier: 1.3
   attackHitRadius: 0.5
   attackHitOffset: {x: 0.6, y: 0}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
-  skill1Damage: 15
-  skill1CritChance: 0.1
-  skill1CritMultiplier: 0.7
+  skill1Damage: 22
+  skill1DamageMax: 25
+  skill1CritChance: 0.15
+  skill1CritMultiplier: 1.2
   skill1HitRadius: 0.8
   skill1HitOffset: {x: 0.6, y: 0}
-  rageHeavyDamageDamage: 25
-  rageHeavyDamageCritChance: 0.15
-  rageHeavyDamageCritMultiplier: 0.8
+  rageHeavyDamageDamage: 32
+  rageHeavyDamageDamageMax: 35
+  rageHeavyDamageCritChance: 0.22
+  rageHeavyDamageCritMultiplier: 1.55
   rageHeavyDamageHitRadius: 1
   rageHeavyDamageHitOffset: {x: 0.7, y: 0}
   damagePopupPrefab: {fileID: 5486348128603047901, guid: 2772f113c78f9c3448cc6e34708c6815, type: 3}
