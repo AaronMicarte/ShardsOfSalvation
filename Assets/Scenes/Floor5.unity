@@ -6672,8 +6672,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   aggroDuration: 3
-  damageTakenMultiplier: 1.1
-  armor: 6
+  damageTakenMultiplier: 0.75
+  armor: 0
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -6705,7 +6705,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  maxHealth: 90
+  maxHealth: 20
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -7336,8 +7336,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   aggroDuration: 3
-  damageTakenMultiplier: 1
-  armor: 10
+  damageTakenMultiplier: 0.75
+  armor: 0
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -7345,7 +7345,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 130
+  maxHealth: 70
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -9603,8 +9603,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   aggroDuration: 3
-  damageTakenMultiplier: 1
-  armor: 10
+  damageTakenMultiplier: 0.75
+  armor: 0
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -9612,7 +9612,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 130
+  maxHealth: 70
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -12428,8 +12428,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   aggroDuration: 3
-  damageTakenMultiplier: 1.1
-  armor: 6
+  damageTakenMultiplier: 0.75
+  armor: 0
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -12461,7 +12461,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  maxHealth: 90
+  maxHealth: 20
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -12989,8 +12989,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   aggroDuration: 3
-  damageTakenMultiplier: 1
-  armor: 10
+  damageTakenMultiplier: 0.75
+  armor: 0
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -12998,7 +12998,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 130
+  maxHealth: 70
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -14336,8 +14336,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   aggroDuration: 3
-  damageTakenMultiplier: 1.1
-  armor: 6
+  damageTakenMultiplier: 0.75
+  armor: 0
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -14369,7 +14369,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  maxHealth: 90
+  maxHealth: 20
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -14851,8 +14851,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   aggroDuration: 3
-  damageTakenMultiplier: 1
-  armor: 10
+  damageTakenMultiplier: 0.75
+  armor: 0
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -14860,7 +14860,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 130
+  maxHealth: 70
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -15741,7 +15741,7 @@ MonoBehaviour:
   attackStateBaseName: attack-
   singleAttackPerApproach: 0
   attackRecovery: 2
-  damageAmount: 4
+  damageAmount: 2
   maxAttackDuration: 2
   attackHitsOutOfRange: 0
   attackVariantConfigs:
@@ -15784,8 +15784,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   aggroDuration: 3
-  damageTakenMultiplier: 0.85
-  armor: 24
+  damageTakenMultiplier: 0.75
+  armor: 20
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -15793,7 +15793,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 255
+  maxHealth: 200
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -16690,8 +16690,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   aggroDuration: 3
-  damageTakenMultiplier: 1
-  armor: 10
+  damageTakenMultiplier: 0.75
+  armor: 0
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -16699,7 +16699,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 130
+  maxHealth: 70
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -16998,8 +16998,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   aggroDuration: 3
-  damageTakenMultiplier: 1
-  armor: 10
+  damageTakenMultiplier: 0.75
+  armor: 0
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -17007,7 +17007,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 130
+  maxHealth: 70
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -19813,7 +19813,7 @@ MonoBehaviour:
   attackVolume: 1
   dashClip: {fileID: 8300000, guid: 81104c8d33b6f7545aa9db285890ea9a, type: 3}
   dashVolume: 1
-  rageHeavyDamageReactClip: {fileID: 8300000, guid: 0afa3ed6a1285bf43a2d75ec618b45f8, type: 3}
+  rageHeavyDamageReactClip: {fileID: 8300000, guid: c633e0bc689b70a4ebcf34ef10333355, type: 3}
   rageHeavyDamageReactVolume: 1
   rageHeavyDamageImpactClip: {fileID: 0}
   rageHeavyDamageImpactVolume: 1
@@ -19838,24 +19838,24 @@ MonoBehaviour:
   attackBoolParam: isAttacking
   attackDuration: 0.4
   attackCooldown: 0.8
-  attackDamage: 22
-  attackUsesPercent: 0
-  attackPercent: 0
-  attackCritChance: 0.16
-  attackCritMultiplier: 1.7
+  attackDamage: 8
+  attackUsesPercent: 1
+  attackPercent: 0.12
+  attackCritChance: 0.1
+  attackCritMultiplier: 0.6
   attackHitRadius: 0.5
   attackHitOffset: {x: 0.6, y: 0}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
-  skill1Damage: 42
-  skill1CritChance: 0.18
-  skill1CritMultiplier: 1.9
+  skill1Damage: 15
+  skill1CritChance: 0.1
+  skill1CritMultiplier: 0.7
   skill1HitRadius: 0.8
   skill1HitOffset: {x: 0.6, y: 0}
-  rageHeavyDamageDamage: 70
-  rageHeavyDamageCritChance: 0.27
-  rageHeavyDamageCritMultiplier: 2.1
+  rageHeavyDamageDamage: 25
+  rageHeavyDamageCritChance: 0.15
+  rageHeavyDamageCritMultiplier: 0.8
   rageHeavyDamageHitRadius: 1
   rageHeavyDamageHitOffset: {x: 0.7, y: 0}
   damagePopupPrefab: {fileID: 5486348128603047901, guid: 2772f113c78f9c3448cc6e34708c6815, type: 3}
@@ -20241,7 +20241,7 @@ MonoBehaviour:
   attackStateBaseName: attack-
   singleAttackPerApproach: 0
   attackRecovery: 1.4
-  damageAmount: 3
+  damageAmount: 1
   maxAttackDuration: 0
   attackHitsOutOfRange: 0
   attackVariantConfigs: []
@@ -20249,7 +20249,7 @@ MonoBehaviour:
   attackHitBoxSize: {x: 1.6, y: 0.8}
   lockMovementWhileAttacking: 1
   attackHitOffset: {x: 0.6, y: 0}
-  attackHitRadius: 1.9
+  attackHitRadius: 4
   attackTargetMask:
     serializedVersion: 2
     m_Bits: 64
@@ -20272,8 +20272,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   aggroDuration: 3
-  damageTakenMultiplier: 1
-  armor: 18
+  damageTakenMultiplier: 1.5
+  armor: 9
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -20281,7 +20281,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 260
+  maxHealth: 100
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1

@@ -380,7 +380,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4294463410006636123, guid: b15ec258bb9c4a741b55cb05f89a9760, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -653,7 +653,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4294463410006636123, guid: b15ec258bb9c4a741b55cb05f89a9760, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -3153,7 +3153,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4294463410006636123, guid: b15ec258bb9c4a741b55cb05f89a9760, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -4766,7 +4766,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4294463410006636123, guid: b15ec258bb9c4a741b55cb05f89a9760, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -7637,7 +7637,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ControlsInversion
   player: {fileID: 352744353}
   autoStop: 1
-  inversionDuration: 999
+  inversionDuration: 60
   messageText: {fileID: 1858588989}
   inversionMessage: Control Inversion
   messageDuration: 5
@@ -7867,24 +7867,24 @@ MonoBehaviour:
   attackBoolParam: isAttacking
   attackDuration: 0.4
   attackCooldown: 0.8
-  attackDamage: 15
-  attackUsesPercent: 0
-  attackPercent: 0
-  attackCritChance: 0.14
-  attackCritMultiplier: 1.6
+  attackDamage: 8
+  attackUsesPercent: 1
+  attackPercent: 0.12
+  attackCritChance: 0.1
+  attackCritMultiplier: 0.6
   attackHitRadius: 0.5
   attackHitOffset: {x: 0.6, y: 0}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
-  skill1Damage: 29
-  skill1CritChance: 0.16
-  skill1CritMultiplier: 1.8
+  skill1Damage: 15
+  skill1CritChance: 0.1
+  skill1CritMultiplier: 0.7
   skill1HitRadius: 0.8
   skill1HitOffset: {x: 0.6, y: 0}
-  rageHeavyDamageDamage: 46
-  rageHeavyDamageCritChance: 0.24
-  rageHeavyDamageCritMultiplier: 2
+  rageHeavyDamageDamage: 25
+  rageHeavyDamageCritChance: 0.15
+  rageHeavyDamageCritMultiplier: 0.8
   rageHeavyDamageHitRadius: 1
   rageHeavyDamageHitOffset: {x: 0.7, y: 0}
   damagePopupPrefab: {fileID: 5486348128603047901, guid: 2772f113c78f9c3448cc6e34708c6815, type: 3}
@@ -8413,7 +8413,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4294463410006636123, guid: b15ec258bb9c4a741b55cb05f89a9760, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -9643,7 +9643,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4294463410006636123, guid: b15ec258bb9c4a741b55cb05f89a9760, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -9825,7 +9825,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4294463410006636123, guid: b15ec258bb9c4a741b55cb05f89a9760, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -10578,7 +10578,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4294463410006636123, guid: b15ec258bb9c4a741b55cb05f89a9760, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -11691,7 +11691,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 37382dd77877a15469d20139fbd90db6, type: 3}
+  m_Resource: {fileID: 8300000, guid: d88cc88c974d94749be8aae588f36495, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.4
   m_Pitch: 1
@@ -14886,7 +14886,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4294463410006636123, guid: b15ec258bb9c4a741b55cb05f89a9760, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -15463,7 +15463,7 @@ MonoBehaviour:
   attackStateBaseName: attack-
   singleAttackPerApproach: 0
   attackRecovery: 1
-  damageAmount: 4
+  damageAmount: 5
   maxAttackDuration: 0
   attackHitsOutOfRange: 0
   attackVariantConfigs: []
@@ -15494,8 +15494,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   aggroDuration: 3
-  damageTakenMultiplier: 1
-  armor: 22
+  damageTakenMultiplier: 1.5
+  armor: 15
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -15503,7 +15503,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 260
+  maxHealth: 150
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -24291,7 +24291,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4294463410006636123, guid: b15ec258bb9c4a741b55cb05f89a9760, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
