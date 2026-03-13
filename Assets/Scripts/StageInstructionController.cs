@@ -141,11 +141,7 @@ public class StageInstructionController : MonoBehaviour
 
     private float GetTopBannerDurationForScene(string sceneName)
     {
-        if (sceneName.Equals("Floor1"))
-            return 8f;
-        if (sceneName.Equals("Floor4"))
-            return 8f;
-        return 6f;
+        return 3.2f;
     }
 
     private void UpdateTopBannerFade()

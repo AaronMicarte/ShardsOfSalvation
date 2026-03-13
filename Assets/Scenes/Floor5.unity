@@ -6465,7 +6465,7 @@ GameObject:
   - component: {fileID: 620544897}
   - component: {fileID: 620544898}
   m_Layer: 7
-  m_Name: Demon Bat
+  m_Name: Demon Bat Summon
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6561,7 +6561,7 @@ Transform:
   m_GameObject: {fileID: 620544892}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 77.86, y: 1.88, z: 0}
+  m_LocalPosition: {x: 77.76, y: 1.13, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6673,7 +6673,7 @@ MonoBehaviour:
     m_Bits: 0
   aggroDuration: 3
   damageTakenMultiplier: 1.1
-  armor: 6
+  armor: 5
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -6705,7 +6705,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  maxHealth: 120
+  maxHealth: 60
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -15649,7 +15649,7 @@ Transform:
   m_GameObject: {fileID: 1449481057}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 72.51, y: 0.91, z: 0}
+  m_LocalPosition: {x: 72.38, y: 0.88, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15859,7 +15859,7 @@ MonoBehaviour:
   dropShardOnDeath: 1
   shardPickupPrefab: {fileID: 1910965105}
   shardDropOffset: {x: 0.1, y: 0}
-  dropBuffOnDeath: 1
+  dropBuffOnDeath: 0
   buffPickupPrefab: {fileID: 6724670659867803009, guid: 0b050400190b12445b06d8150c797c2f, type: 3}
   buffDropType: 1
   buffStacksGranted: 1
@@ -24266,7 +24266,7 @@ Transform:
   m_GameObject: {fileID: 2094943568173288049}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.9757235, z: -0, w: 0.21900612}
-  m_LocalPosition: {x: 0.1, y: 3.54, z: 0}
+  m_LocalPosition: {x: 0.24, y: 5.09, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1.3572124}
   m_ConstrainProportionsScale: 0
   m_Children: []
