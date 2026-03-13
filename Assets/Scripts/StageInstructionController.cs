@@ -12,6 +12,8 @@ public class StageInstructionController : MonoBehaviour
     private GameObject topBanner;
     private CanvasGroup topBannerCanvasGroup;
     private TextMeshProUGUI topBannerText;
+    private GameObject floor1Hint;
+    private TextMeshProUGUI floor1HintText;
 
     private GameObject stage4Panel;
     private Button stage4ContinueButton;
@@ -91,6 +93,7 @@ public class StageInstructionController : MonoBehaviour
         BuildUiIfNeeded();
 
         bool isFloor = sceneName.StartsWith("Floor");
+        bool isFloor1 = sceneName.Equals("Floor1");
         if (rootCanvas != null)
             rootCanvas.gameObject.SetActive(isFloor);
 
@@ -110,6 +113,11 @@ public class StageInstructionController : MonoBehaviour
         if (topBannerCanvasGroup != null)
             topBannerCanvasGroup.alpha = 1f;
 
+        if (floor1Hint != null)
+            floor1Hint.SetActive(isFloor1);
+        if (isFloor1 && floor1HintText != null)
+            floor1HintText.text = "Tip: Press ESC anytime to open menu and view controls.";
+
         stage4PopupShownThisScene = false;
         stage4PopupStartTime = Time.unscaledTime;
         HideStage4PopupImmediate();
@@ -118,7 +126,7 @@ public class StageInstructionController : MonoBehaviour
     private string GetTopInstructionForScene(string sceneName)
     {
         if (sceneName.Equals("Floor1"))
-            return "Floor 1 Objective: Defeat enemies, collect the shard, then enter the portal.";
+            return "Floor 1 Objective: Defeat enemies, collect the shard, then enter the portal. Double tap A or D to dash.";
         if (sceneName.Equals("Floor2"))
             return "Floor 2 Hazard: Vision is reduced. Stay close and track enemy movement carefully.";
         if (sceneName.Equals("Floor3"))
@@ -133,6 +141,8 @@ public class StageInstructionController : MonoBehaviour
 
     private float GetTopBannerDurationForScene(string sceneName)
     {
+        if (sceneName.Equals("Floor1"))
+            return 8f;
         if (sceneName.Equals("Floor4"))
             return 8f;
         return 6f;
@@ -204,6 +214,7 @@ public class StageInstructionController : MonoBehaviour
         scaler.matchWidthOrHeight = 0.5f;
 
         BuildTopBanner(canvasGo.transform);
+        BuildFloor1Hint(canvasGo.transform);
         BuildStage4Popup(canvasGo.transform);
     }
 
@@ -243,6 +254,45 @@ public class StageInstructionController : MonoBehaviour
         topBannerText.color = new Color(0.95f, 0.84f, 0.58f, 1f);
         topBannerText.textWrappingMode = TextWrappingModes.NoWrap;
         topBannerText.raycastTarget = false;
+    }
+
+    private void BuildFloor1Hint(Transform parent)
+    {
+        floor1Hint = new GameObject("Floor1EscHint", typeof(RectTransform), typeof(Image), typeof(Outline));
+        floor1Hint.transform.SetParent(parent, false);
+
+        var rect = floor1Hint.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0f, 1f);
+        rect.anchorMax = new Vector2(0f, 1f);
+        rect.pivot = new Vector2(0f, 1f);
+        rect.anchoredPosition = new Vector2(18f, -74f);
+        rect.sizeDelta = new Vector2(760f, 50f);
+
+        var bg = floor1Hint.GetComponent<Image>();
+        bg.color = new Color(0.18f, 0.09f, 0.02f, 0.72f);
+
+        var outline = floor1Hint.GetComponent<Outline>();
+        outline.effectColor = new Color(0.95f, 0.84f, 0.58f, 0.95f);
+        outline.effectDistance = new Vector2(2f, -2f);
+
+        var textGo = new GameObject("Text", typeof(RectTransform), typeof(TextMeshProUGUI));
+        textGo.transform.SetParent(floor1Hint.transform, false);
+
+        var textRect = textGo.GetComponent<RectTransform>();
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = new Vector2(12f, 4f);
+        textRect.offsetMax = new Vector2(-12f, -4f);
+
+        floor1HintText = textGo.GetComponent<TextMeshProUGUI>();
+        floor1HintText.fontSize = 22f;
+        floor1HintText.color = new Color(0.95f, 0.84f, 0.58f, 1f);
+        floor1HintText.alignment = TextAlignmentOptions.Left;
+        floor1HintText.raycastTarget = false;
+        floor1HintText.overflowMode = TextOverflowModes.Overflow;
+        floor1HintText.textWrappingMode = TextWrappingModes.NoWrap;
+
+        floor1Hint.SetActive(false);
     }
 
     private void BuildStage4Popup(Transform parent)

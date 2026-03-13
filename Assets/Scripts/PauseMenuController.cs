@@ -17,9 +17,15 @@ public class PauseMenuController : MonoBehaviour
     private GameObject panel;
     private TextMeshProUGUI livesText;
     private TextMeshProUGUI statusText;
+    private TextMeshProUGUI controlsBodyText;
     private Button resumeButton;
     private Button retryButton;
+    private Button controlsButton;
     private Button mainMenuButton;
+    private Button controlsBackButton;
+
+    private GameObject mainContentRoot;
+    private GameObject controlsContentRoot;
 
     private bool isOpen;
     private float timeScaleBeforePause = 1f;
@@ -75,7 +81,9 @@ public class PauseMenuController : MonoBehaviour
 
         if (resumeButton != null) resumeButton.onClick.RemoveListener(OnResumePressed);
         if (retryButton != null) retryButton.onClick.RemoveListener(OnRetryPressed);
+        if (controlsButton != null) controlsButton.onClick.RemoveListener(OnControlsPressed);
         if (mainMenuButton != null) mainMenuButton.onClick.RemoveListener(OnMainMenuPressed);
+        if (controlsBackButton != null) controlsBackButton.onClick.RemoveListener(OnControlsBackPressed);
     }
 
     private void Update()
@@ -131,6 +139,7 @@ public class PauseMenuController : MonoBehaviour
             rootCanvas.gameObject.SetActive(true);
 
         HideMenuImmediate();
+        SetControlsPageVisible(false);
     }
 
     private void BuildUiIfNeeded()
@@ -166,14 +175,30 @@ public class PauseMenuController : MonoBehaviour
         cardRect.anchorMin = new Vector2(0.5f, 0.5f);
         cardRect.anchorMax = new Vector2(0.5f, 0.5f);
         cardRect.pivot = new Vector2(0.5f, 0.5f);
-        cardRect.sizeDelta = new Vector2(600f, 460f);
+        cardRect.sizeDelta = new Vector2(600f, 500f);
         var cardImage = card.GetComponent<Image>();
         cardImage.color = new Color(0.20f, 0.11f, 0.03f, 0.95f);
         var cardOutline = card.GetComponent<Outline>();
         cardOutline.effectColor = new Color(0.73f, 0.52f, 0.24f, 0.95f);
         cardOutline.effectDistance = new Vector2(3f, -3f);
 
-        var title = CreateLabel(card.transform, "PAUSED", 44f, new Color(0.90f, 0.72f, 0.35f, 1f));
+        mainContentRoot = new GameObject("MainContent", typeof(RectTransform));
+        mainContentRoot.transform.SetParent(card.transform, false);
+        var mainRootRect = mainContentRoot.GetComponent<RectTransform>();
+        mainRootRect.anchorMin = Vector2.zero;
+        mainRootRect.anchorMax = Vector2.one;
+        mainRootRect.offsetMin = Vector2.zero;
+        mainRootRect.offsetMax = Vector2.zero;
+
+        controlsContentRoot = new GameObject("ControlsContent", typeof(RectTransform));
+        controlsContentRoot.transform.SetParent(card.transform, false);
+        var controlsRootRect = controlsContentRoot.GetComponent<RectTransform>();
+        controlsRootRect.anchorMin = Vector2.zero;
+        controlsRootRect.anchorMax = Vector2.one;
+        controlsRootRect.offsetMin = Vector2.zero;
+        controlsRootRect.offsetMax = Vector2.zero;
+
+        var title = CreateLabel(mainContentRoot.transform, "PAUSED", 44f, new Color(0.90f, 0.72f, 0.35f, 1f));
         var titleRect = title.rectTransform;
         titleRect.anchorMin = new Vector2(0.5f, 1f);
         titleRect.anchorMax = new Vector2(0.5f, 1f);
@@ -181,7 +206,7 @@ public class PauseMenuController : MonoBehaviour
         titleRect.anchoredPosition = new Vector2(0f, -32f);
         titleRect.sizeDelta = new Vector2(520f, 72f);
 
-        livesText = CreateLabel(card.transform, string.Empty, 30f, new Color(0.95f, 0.84f, 0.58f, 1f));
+        livesText = CreateLabel(mainContentRoot.transform, string.Empty, 30f, new Color(0.95f, 0.84f, 0.58f, 1f));
         var livesRect = livesText.rectTransform;
         livesRect.anchorMin = new Vector2(0.5f, 1f);
         livesRect.anchorMax = new Vector2(0.5f, 1f);
@@ -189,7 +214,7 @@ public class PauseMenuController : MonoBehaviour
         livesRect.anchoredPosition = new Vector2(0f, -96f);
         livesRect.sizeDelta = new Vector2(520f, 54f);
 
-        statusText = CreateLabel(card.transform, string.Empty, 22f, new Color(0.95f, 0.62f, 0.45f, 1f));
+        statusText = CreateLabel(mainContentRoot.transform, string.Empty, 22f, new Color(0.95f, 0.62f, 0.45f, 1f));
         var statusRect = statusText.rectTransform;
         statusRect.anchorMin = new Vector2(0.5f, 1f);
         statusRect.anchorMax = new Vector2(0.5f, 1f);
@@ -197,13 +222,47 @@ public class PauseMenuController : MonoBehaviour
         statusRect.anchoredPosition = new Vector2(0f, -146f);
         statusRect.sizeDelta = new Vector2(520f, 44f);
 
-        resumeButton = CreateMenuButton(card.transform, "Resume", new Vector2(0f, -220f));
-        retryButton = CreateMenuButton(card.transform, "Retry", new Vector2(0f, -290f));
-        mainMenuButton = CreateMenuButton(card.transform, "Main Menu", new Vector2(0f, -360f));
+        resumeButton = CreateMenuButton(mainContentRoot.transform, "Resume", new Vector2(0f, -210f));
+        retryButton = CreateMenuButton(mainContentRoot.transform, "Retry", new Vector2(0f, -274f));
+        controlsButton = CreateMenuButton(mainContentRoot.transform, "Controls", new Vector2(0f, -338f));
+        mainMenuButton = CreateMenuButton(mainContentRoot.transform, "Main Menu", new Vector2(0f, -402f));
 
         resumeButton.onClick.AddListener(OnResumePressed);
         retryButton.onClick.AddListener(OnRetryPressed);
+        controlsButton.onClick.AddListener(OnControlsPressed);
         mainMenuButton.onClick.AddListener(OnMainMenuPressed);
+
+        var controlsTitle = CreateLabel(controlsContentRoot.transform, "CONTROLS", 44f, new Color(0.90f, 0.72f, 0.35f, 1f));
+        var controlsTitleRect = controlsTitle.rectTransform;
+        controlsTitleRect.anchorMin = new Vector2(0.5f, 1f);
+        controlsTitleRect.anchorMax = new Vector2(0.5f, 1f);
+        controlsTitleRect.pivot = new Vector2(0.5f, 1f);
+        controlsTitleRect.anchoredPosition = new Vector2(0f, -32f);
+        controlsTitleRect.sizeDelta = new Vector2(520f, 72f);
+
+        controlsBodyText = CreateLabel(controlsContentRoot.transform,
+            "Movement : A and D\n" +
+            "Jump : Spacebar\n" +
+            "Basic Attack : K\n" +
+            "Skill 1 : E\n" +
+            "Rage Mode : Y\n" +
+            "Rage Skill 1 : E\n" +
+            "Rage Skill 2 : R",
+            30f,
+            new Color(0.95f, 0.84f, 0.58f, 1f));
+        var controlsBodyRect = controlsBodyText.rectTransform;
+        controlsBodyRect.anchorMin = new Vector2(0.5f, 1f);
+        controlsBodyRect.anchorMax = new Vector2(0.5f, 1f);
+        controlsBodyRect.pivot = new Vector2(0.5f, 1f);
+        controlsBodyRect.anchoredPosition = new Vector2(0f, -110f);
+        controlsBodyRect.sizeDelta = new Vector2(520f, 250f);
+        controlsBodyText.alignment = TextAlignmentOptions.TopLeft;
+        controlsBodyText.textWrappingMode = TextWrappingModes.Normal;
+
+        controlsBackButton = CreateMenuButton(controlsContentRoot.transform, "Back", new Vector2(0f, -402f));
+        controlsBackButton.onClick.AddListener(OnControlsBackPressed);
+
+        SetControlsPageVisible(false);
     }
 
     private TextMeshProUGUI CreateLabel(Transform parent, string text, float fontSize, Color color)
@@ -266,7 +325,7 @@ public class PauseMenuController : MonoBehaviour
         label.text = text;
         label.fontSize = 28f;
         label.alignment = TextAlignmentOptions.Center;
-        label.color = new Color(0.08f, 0.04f, 0f, 1f);
+        label.color = new Color(0.95f, 0.84f, 0.58f, 1f);
         label.raycastTarget = false;
 
         return button;
@@ -277,6 +336,7 @@ public class PauseMenuController : MonoBehaviour
         if (panel == null)
             return;
 
+        SetControlsPageVisible(false);
         UpdateLivesUi();
         panel.SetActive(true);
         isOpen = true;
@@ -291,6 +351,7 @@ public class PauseMenuController : MonoBehaviour
         if (panel != null)
             panel.SetActive(false);
 
+        SetControlsPageVisible(false);
         isOpen = false;
         Time.timeScale = 1f;
         AudioListener.pause = false;
@@ -304,6 +365,7 @@ public class PauseMenuController : MonoBehaviour
         if (panel != null)
             panel.SetActive(false);
 
+        SetControlsPageVisible(false);
         isOpen = false;
         Time.timeScale = Mathf.Max(0.0001f, timeScaleBeforePause);
         AudioListener.pause = false;
@@ -327,6 +389,17 @@ public class PauseMenuController : MonoBehaviour
                 ? "Retry consumes 1 life"
                 : $"No lives left. Go Main Menu to refresh to {max}";
         }
+
+        if (controlsButton != null)
+            controlsButton.interactable = true;
+    }
+
+    private void SetControlsPageVisible(bool visible)
+    {
+        if (mainContentRoot != null)
+            mainContentRoot.SetActive(!visible);
+        if (controlsContentRoot != null)
+            controlsContentRoot.SetActive(visible);
     }
 
     private void OnResumePressed()
@@ -342,6 +415,7 @@ public class PauseMenuController : MonoBehaviour
             return;
         }
 
+        SetControlsPageVisible(false);
         Player.ConsumeRetryLife();
         Player.RestoreDropBuffStacksFromStageCheckpoint();
         PlayerHealth.ResetSavedHP();
@@ -353,8 +427,19 @@ public class PauseMenuController : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    private void OnControlsPressed()
+    {
+        SetControlsPageVisible(true);
+    }
+
+    private void OnControlsBackPressed()
+    {
+        SetControlsPageVisible(false);
+    }
+
     private void OnMainMenuPressed()
     {
+        SetControlsPageVisible(false);
         isOpen = false;
         Time.timeScale = 1f;
         AudioListener.pause = false;
