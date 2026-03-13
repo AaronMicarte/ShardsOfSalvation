@@ -38,7 +38,15 @@ public class DeathUIController : MonoBehaviour
     public void ShowDeath(string reason = null)
     {
         if (deathPanel == null) return;
+
+        int livesRemaining = Player.GetRetryLivesRemaining();
+        if (retryButton != null)
+            retryButton.interactable = livesRemaining > 0;
+
         if (!string.IsNullOrEmpty(reason) && detailText != null) detailText.text = reason;
+        else if (detailText != null)
+            detailText.text = $"Retries left: {livesRemaining}/{Player.GetMaxRetryLivesPerRun()}";
+
         deathPanel.SetActive(true);
         StartCoroutine(FadeInPanel());
     }
@@ -60,8 +68,16 @@ public class DeathUIController : MonoBehaviour
 
     void OnRetryPressed()
     {
-        // Keep current buff stacks when retrying the same stage.
-        Player.SaveActiveDropBuffStacksForRetry();
+        if (Player.GetRetryLivesRemaining() <= 0)
+        {
+            if (detailText != null)
+                detailText.text = $"No retries left. Return to Main Menu to refresh to {Player.GetMaxRetryLivesPerRun()} retries.";
+            if (retryButton != null) retryButton.interactable = false;
+            return;
+        }
+
+        // Retry from stage checkpoint: discard buffs gained after entering this stage.
+        Player.RestoreDropBuffStacksFromStageCheckpoint();
         // Reset saved HP so the player starts full on retry
         PlayerHealth.ResetSavedHP();
         // reload current active scene
@@ -72,6 +88,7 @@ public class DeathUIController : MonoBehaviour
     {
         // Returning to menu starts a fresh run (no saved buffs).
         Player.ResetSavedDropBuffStacks();
+        Player.ResetRetryLives();
         // go to main menu scene
         SceneManager.LoadScene("MainMenu");
     }

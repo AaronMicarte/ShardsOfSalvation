@@ -12,6 +12,13 @@ public class IntroDialogueManager : MonoBehaviour
     public Image backgroundImage;
     public Image portraitImage;
     public TextMeshProUGUI dialogueText;
+    [Header("Skip")]
+    [Tooltip("Optional skip button. If missing, one is auto-created at the top-right.")]
+    public Button skipButton;
+    [Tooltip("Label shown on the skip button")]
+    public string skipButtonLabel = "Skip";
+    [Tooltip("Top-right anchored position for the skip button (negative X moves left)")]
+    public Vector2 skipButtonAnchoredPosition = new Vector2(-24f, -24f);
 
     public DialogueLine[] lines;
 
@@ -56,6 +63,10 @@ public class IntroDialogueManager : MonoBehaviour
 
     void Start()
     {
+        EnsureSkipButton();
+        if (skipButton != null)
+            skipButton.onClick.AddListener(SkipDialogue);
+
         EnsureDefaultFinalSceneLines();
 
         // always send the final cutscene back to the main menu
@@ -221,6 +232,9 @@ public class IntroDialogueManager : MonoBehaviour
     {
         // make sure any runtime audio sources are stopped and cleaned up when the object is disabled
         StopTypingLoopAndPlayEndSfx();
+
+        if (skipButton != null)
+            skipButton.onClick.RemoveListener(SkipDialogue);
     }
 
     void NextLine()
@@ -234,6 +248,83 @@ public class IntroDialogueManager : MonoBehaviour
         }
 
         ShowLine();
+    }
+
+    public void SkipDialogue()
+    {
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+        }
+
+        StopTypingLoopAndPlayEndSfx();
+        SceneManager.LoadScene(sceneToLoadOnComplete);
+    }
+
+    private void EnsureSkipButton()
+    {
+        if (skipButton != null)
+            return;
+
+        Canvas targetCanvas = null;
+        if (dialogueText != null)
+            targetCanvas = dialogueText.GetComponentInParent<Canvas>();
+
+        if (targetCanvas == null)
+            targetCanvas = FindFirstObjectByType<Canvas>();
+
+        if (targetCanvas == null)
+            return;
+
+        Transform existing = targetCanvas.transform.Find("IntroSkipButton");
+        if (existing != null)
+        {
+            skipButton = existing.GetComponent<Button>();
+            return;
+        }
+
+        GameObject buttonGo = new GameObject("IntroSkipButton", typeof(RectTransform), typeof(Image), typeof(Button));
+        buttonGo.transform.SetParent(targetCanvas.transform, false);
+
+        RectTransform buttonRect = buttonGo.GetComponent<RectTransform>();
+        buttonRect.anchorMin = new Vector2(1f, 1f);
+        buttonRect.anchorMax = new Vector2(1f, 1f);
+        buttonRect.pivot = new Vector2(1f, 1f);
+        buttonRect.anchoredPosition = skipButtonAnchoredPosition;
+        buttonRect.sizeDelta = new Vector2(140f, 44f);
+
+        Image bg = buttonGo.GetComponent<Image>();
+        // Gold/bronze style background inspired by the provided button art
+        bg.color = new Color(0.68f, 0.49f, 0.23f, 0.95f);
+
+        // Add a subtle outline for better readability on any background
+        var outline = buttonGo.AddComponent<Outline>();
+        outline.effectColor = new Color(0.15f, 0.08f, 0.01f, 0.9f);
+        outline.effectDistance = new Vector2(2f, -2f);
+
+        // Add a slight shadow to push the button off the background
+        var shadow = buttonGo.AddComponent<Shadow>();
+        shadow.effectColor = new Color(0f, 0f, 0f, 0.35f);
+        shadow.effectDistance = new Vector2(2f, -2f);
+
+        skipButton = buttonGo.GetComponent<Button>();
+
+        GameObject labelGo = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
+        labelGo.transform.SetParent(buttonGo.transform, false);
+
+        RectTransform labelRect = labelGo.GetComponent<RectTransform>();
+        labelRect.anchorMin = Vector2.zero;
+        labelRect.anchorMax = Vector2.one;
+        labelRect.offsetMin = Vector2.zero;
+        labelRect.offsetMax = Vector2.zero;
+
+        TextMeshProUGUI label = labelGo.GetComponent<TextMeshProUGUI>();
+        label.text = string.IsNullOrWhiteSpace(skipButtonLabel) ? "Skip" : skipButtonLabel;
+        label.alignment = TextAlignmentOptions.Center;
+        label.fontSize = 24f;
+        label.color = new Color(0.08f, 0.04f, 0f, 1f);
+        label.raycastTarget = false;
     }
 
     private string GetDefaultCompleteScene()

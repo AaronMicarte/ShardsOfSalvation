@@ -203,6 +203,10 @@ public class PlayerHealth : MonoBehaviour
     {
         if (isDead) return;
         isDead = true;
+
+        // A life is spent when the player dies, so the death panel immediately shows updated retries.
+        Player.ConsumeRetryLife();
+
         // disable listed components (stop player input / movement)
         if (disableOnDeath != null)
         {

@@ -44,8 +44,8 @@ public class PortalTrigger : MonoBehaviour
             return;
         }
 
-        // Persist run buffs when advancing between stages.
-        Player.SaveActiveDropBuffStacksForRetry();
+        // Advancing stages commits a new checkpoint for future retries.
+        Player.CommitCurrentDropBuffStacksAsStageCheckpoint();
 
         // Optional: Debug.Log("Player hit portal");
         SceneManager.LoadScene(sceneToLoad);

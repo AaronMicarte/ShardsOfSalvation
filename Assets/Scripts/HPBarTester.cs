@@ -19,11 +19,6 @@ public class HPBarTester : MonoBehaviour
             playerHealth.Heal(1);
         }
 
-        if (Keyboard.current.kKey.wasPressedThisFrame)
-        {
-            playerHealth.RestoreFullHealth(true); // K restores full HP safely
-        }
-
         if (Keyboard.current.lKey.wasPressedThisFrame)
         {
             int dmg = Random.Range(1, 3);

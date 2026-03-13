@@ -147,6 +147,10 @@ public class Player : MonoBehaviour
     private int critDamageBuffStacks = 0;
     private const string DamageBuffStacksPrefsKey = "Player_DamageBuffStacks";
     private const string CritDamageBuffStacksPrefsKey = "Player_CritDamageBuffStacks";
+    private const string DamageBuffStageCheckpointPrefsKey = "Player_DamageBuffStageCheckpointStacks";
+    private const string CritDamageBuffStageCheckpointPrefsKey = "Player_CritDamageBuffStageCheckpointStacks";
+    private const string RetryLivesPrefsKey = "Player_RetryLivesRemaining";
+    private const int MaxRetryLivesPerRun = 3;
 
     [Header("Damage Popup")]
     [SerializeField, Tooltip("Prefab used to display floating damage text (optional)")] private DamagePopup damagePopupPrefab;
@@ -528,6 +532,7 @@ public class Player : MonoBehaviour
         bool loadedSavedBuffs = LoadSavedDropBuffStacks();
         if (!loadedSavedBuffs && resetDropBuffsOnAwake)
             ResetDropBuffStacks();
+        EnsureStageCheckpointExists();
 
         rb = GetComponent<Rigidbody2D>();
         initialScale = transform.localScale;
@@ -593,6 +598,7 @@ public class Player : MonoBehaviour
     {
         // In-editor play stop should always reset run state.
         ResetSavedDropBuffStacks();
+        ResetRetryLives();
     }
 #endif
 
@@ -1231,10 +1237,74 @@ public class Player : MonoBehaviour
             player.SaveDropBuffStacks();
     }
 
+    public static void CommitCurrentDropBuffStacksAsStageCheckpoint()
+    {
+        var player = FindFirstObjectByType<Player>();
+        if (player != null)
+        {
+            player.SaveDropBuffStacks();
+            player.SaveStageCheckpointDropBuffStacks();
+            return;
+        }
+
+        // Fallback for scene-flow edge cases where no Player instance is resolved.
+        int damage = Mathf.Max(0, PlayerPrefs.GetInt(DamageBuffStacksPrefsKey, 0));
+        int crit = Mathf.Max(0, PlayerPrefs.GetInt(CritDamageBuffStacksPrefsKey, 0));
+        PlayerPrefs.SetInt(DamageBuffStageCheckpointPrefsKey, damage);
+        PlayerPrefs.SetInt(CritDamageBuffStageCheckpointPrefsKey, crit);
+        PlayerPrefs.Save();
+    }
+
+    public static void RestoreDropBuffStacksFromStageCheckpoint()
+    {
+        bool hasDamage = PlayerPrefs.HasKey(DamageBuffStageCheckpointPrefsKey);
+        bool hasCrit = PlayerPrefs.HasKey(CritDamageBuffStageCheckpointPrefsKey);
+
+        int damage = hasDamage ? Mathf.Max(0, PlayerPrefs.GetInt(DamageBuffStageCheckpointPrefsKey, 0)) : 0;
+        int crit = hasCrit ? Mathf.Max(0, PlayerPrefs.GetInt(CritDamageBuffStageCheckpointPrefsKey, 0)) : 0;
+
+        PlayerPrefs.SetInt(DamageBuffStacksPrefsKey, damage);
+        PlayerPrefs.SetInt(CritDamageBuffStacksPrefsKey, crit);
+        PlayerPrefs.Save();
+    }
+
     public static void ResetSavedDropBuffStacks()
     {
         PlayerPrefs.DeleteKey(DamageBuffStacksPrefsKey);
         PlayerPrefs.DeleteKey(CritDamageBuffStacksPrefsKey);
+        PlayerPrefs.DeleteKey(DamageBuffStageCheckpointPrefsKey);
+        PlayerPrefs.DeleteKey(CritDamageBuffStageCheckpointPrefsKey);
+        PlayerPrefs.Save();
+    }
+
+    public static int GetMaxRetryLivesPerRun() => MaxRetryLivesPerRun;
+
+    public static int GetRetryLivesRemaining()
+    {
+        if (!PlayerPrefs.HasKey(RetryLivesPrefsKey))
+        {
+            PlayerPrefs.SetInt(RetryLivesPrefsKey, MaxRetryLivesPerRun);
+            PlayerPrefs.Save();
+        }
+
+        return Mathf.Clamp(PlayerPrefs.GetInt(RetryLivesPrefsKey, MaxRetryLivesPerRun), 0, MaxRetryLivesPerRun);
+    }
+
+    public static int ConsumeRetryLife()
+    {
+        int current = GetRetryLivesRemaining();
+        if (current <= 0)
+            return 0;
+
+        int next = current - 1;
+        PlayerPrefs.SetInt(RetryLivesPrefsKey, next);
+        PlayerPrefs.Save();
+        return next;
+    }
+
+    public static void ResetRetryLives()
+    {
+        PlayerPrefs.SetInt(RetryLivesPrefsKey, MaxRetryLivesPerRun);
         PlayerPrefs.Save();
     }
 
@@ -1243,6 +1313,23 @@ public class Player : MonoBehaviour
         PlayerPrefs.SetInt(DamageBuffStacksPrefsKey, Mathf.Max(0, damageBuffStacks));
         PlayerPrefs.SetInt(CritDamageBuffStacksPrefsKey, Mathf.Max(0, critDamageBuffStacks));
         PlayerPrefs.Save();
+    }
+
+    private void SaveStageCheckpointDropBuffStacks()
+    {
+        PlayerPrefs.SetInt(DamageBuffStageCheckpointPrefsKey, Mathf.Max(0, damageBuffStacks));
+        PlayerPrefs.SetInt(CritDamageBuffStageCheckpointPrefsKey, Mathf.Max(0, critDamageBuffStacks));
+        PlayerPrefs.Save();
+    }
+
+    private void EnsureStageCheckpointExists()
+    {
+        bool hasDamage = PlayerPrefs.HasKey(DamageBuffStageCheckpointPrefsKey);
+        bool hasCrit = PlayerPrefs.HasKey(CritDamageBuffStageCheckpointPrefsKey);
+        if (hasDamage || hasCrit)
+            return;
+
+        SaveStageCheckpointDropBuffStacks();
     }
 
     private bool LoadSavedDropBuffStacks()

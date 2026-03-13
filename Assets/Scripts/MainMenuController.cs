@@ -47,6 +47,9 @@ public class MainMenuController : MonoBehaviour
 
     void Awake()
     {
+        // Entering main menu always refreshes retry lives for a fresh run.
+        Player.ResetRetryLives();
+
         if (mainMenuPanel != null)
         {
             mainMenuCanvasGroup = mainMenuPanel.GetComponent<CanvasGroup>();
@@ -133,6 +136,7 @@ public class MainMenuController : MonoBehaviour
         // Optionally reset persisted player HP so this starts a fresh run
         if (resetPlayerHPOnStart) PlayerHealth.ResetSavedHP();
         Player.ResetSavedDropBuffStacks();
+        Player.ResetRetryLives();
         StartCoroutine(LoadSceneAfterDelay(0.12f));
     }
 

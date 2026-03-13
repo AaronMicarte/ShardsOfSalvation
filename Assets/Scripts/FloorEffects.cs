@@ -1,7 +1,12 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FloorEffects : MonoBehaviour
 {
+    [Header("Scene Defaults")]
+    [SerializeField, Tooltip("When enabled, floor effects are chosen from active scene name (Floor2=vision/gravity, Floor3=control inversion)")]
+    bool useSceneDefaults = true;
+
     [Header("Gravity")]
     [SerializeField] bool enableGravityDistortion = true;
 
@@ -10,6 +15,19 @@ public class FloorEffects : MonoBehaviour
 
     private GravityDistortion activeGravityDistortion;
     private ControlsInversion activeControlsInversion;
+
+    private void ResolveSceneDefaults(out bool gravityEnabled, out bool inversionEnabled)
+    {
+        gravityEnabled = enableGravityDistortion;
+        inversionEnabled = enableControlsInversion;
+
+        if (!useSceneDefaults)
+            return;
+
+        string sceneName = SceneManager.GetActiveScene().name;
+        gravityEnabled = sceneName.Equals("Floor2");
+        inversionEnabled = sceneName.Equals("Floor3");
+    }
 
     private Player ResolvePlayer()
     {
@@ -33,6 +51,8 @@ public class FloorEffects : MonoBehaviour
 
     void Start()
     {
+        ResolveSceneDefaults(out bool gravityEnabled, out bool inversionEnabled);
+
         var player = ResolvePlayer();
         if (player == null)
         {
@@ -40,7 +60,7 @@ public class FloorEffects : MonoBehaviour
             return;
         }
 
-        if (enableGravityDistortion)
+        if (gravityEnabled)
         {
             activeGravityDistortion = player.GetComponent<GravityDistortion>()
                                   ?? player.GetComponentInChildren<GravityDistortion>()
@@ -48,7 +68,7 @@ public class FloorEffects : MonoBehaviour
             activeGravityDistortion?.StartDistortion();
         }
 
-        if (enableControlsInversion)
+        if (inversionEnabled)
         {
             activeControlsInversion = player.GetComponent<ControlsInversion>()
                                  ?? player.GetComponentInChildren<ControlsInversion>()
@@ -59,8 +79,10 @@ public class FloorEffects : MonoBehaviour
 
     void OnDisable()
     {
+        ResolveSceneDefaults(out bool gravityEnabled, out bool inversionEnabled);
+
         // Stop effects safely when this object is disabled (covers editor stop & runtime)
-        if (enableGravityDistortion)
+        if (gravityEnabled)
         {
             if (activeGravityDistortion == null)
             {
@@ -74,7 +96,7 @@ public class FloorEffects : MonoBehaviour
             activeGravityDistortion?.StopDistortion();
         }
 
-        if (enableControlsInversion)
+        if (inversionEnabled)
         {
             if (activeControlsInversion == null)
             {
