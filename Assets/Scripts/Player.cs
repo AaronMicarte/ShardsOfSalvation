@@ -5,7 +5,7 @@ using TMPro;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
-#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
 
@@ -677,15 +677,14 @@ public class Player : MonoBehaviour
         HandleSpriteFlip();
         UpdateFootsteps();
 
-        // debug/test: press Y to start rage mode (inspect in editor)
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+        // Rage mode hotkey support for keyboard users in all build types.
+#if ENABLE_INPUT_SYSTEM
         if (Keyboard.current != null && Keyboard.current.yKey.wasPressedThisFrame)
             StartRageMode();
-#else
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
         if (Input.GetKeyDown(KeyCode.Y))
             StartRageMode();
-#endif
 #endif
     }
 

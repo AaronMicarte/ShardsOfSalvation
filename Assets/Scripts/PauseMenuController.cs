@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
-#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
 
@@ -30,13 +30,9 @@ public class PauseMenuController : MonoBehaviour
     private bool isOpen;
     private float timeScaleBeforePause = 1f;
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void EnsureControllerExistsOnLoad()
     {
-        var scene = SceneManager.GetActiveScene();
-        if (!ShouldEnableInScene(scene.name))
-            return;
-
         if (FindFirstObjectByType<PauseMenuController>() != null)
             return;
 
@@ -69,6 +65,8 @@ public class PauseMenuController : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
 
         BuildUiIfNeeded();
+        if (rootCanvas != null)
+            rootCanvas.gameObject.SetActive(ShouldEnableInScene(SceneManager.GetActiveScene().name));
         HideMenuImmediate();
     }
 
@@ -109,11 +107,15 @@ public class PauseMenuController : MonoBehaviour
 
     private bool WasEscapePressedThisFrame()
     {
-#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
-        return Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
-#else
-        return Input.GetKeyDown(KeyCode.Escape);
+#if ENABLE_INPUT_SYSTEM
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            return true;
 #endif
+#if ENABLE_LEGACY_INPUT_MANAGER
+        if (Input.GetKeyDown(KeyCode.Escape))
+            return true;
+#endif
+        return false;
     }
 
     private bool IsPlayerDead()
