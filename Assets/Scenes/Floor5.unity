@@ -19913,7 +19913,7 @@ MonoBehaviour:
   attackVolume: 1
   dashClip: {fileID: 8300000, guid: 81104c8d33b6f7545aa9db285890ea9a, type: 3}
   dashVolume: 1
-  rageHeavyDamageReactClip: {fileID: 8300000, guid: 0afa3ed6a1285bf43a2d75ec618b45f8, type: 3}
+  rageHeavyDamageReactClip: {fileID: 8300000, guid: c633e0bc689b70a4ebcf34ef10333355, type: 3}
   rageHeavyDamageReactVolume: 1
   rageHeavyDamageImpactClip: {fileID: 0}
   rageHeavyDamageImpactVolume: 1
@@ -21218,6 +21218,9 @@ MonoBehaviour:
   floatFrequency: 1.8
   allowFinalSceneTransition: 1
   finalSceneName: FinalScene
+  warningMessageText: {fileID: 0}
+  defeatEnemiesFirstMessage: Defeat all enemies first before claiming this shard
+  warningMessageDuration: 2
 --- !u!61 &1910965109
 BoxCollider2D:
   m_ObjectHideFlags: 0
