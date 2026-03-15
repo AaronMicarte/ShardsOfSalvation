@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using TMPro;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Collider2D))]
 public class ShardPickup : MonoBehaviour
@@ -28,10 +30,19 @@ public class ShardPickup : MonoBehaviour
     [SerializeField, Tooltip("Scene name to load when final Stage 5 shard is collected.")]
     private string finalSceneName = "FinalScene";
 
+    [Header("Stage 5 Enemy-Clear Warning")]
+    [SerializeField, Tooltip("Optional message text shown when player touches shard before clearing all enemies on Floor5.")]
+    private TextMeshProUGUI warningMessageText;
+    [SerializeField, Tooltip("Popup message shown when shard cannot be picked yet.")]
+    private string defeatEnemiesFirstMessage = "Defeat all enemies first before claiming this shard";
+    [SerializeField, Tooltip("Seconds to keep the warning visible.")]
+    private float warningMessageDuration = 2f;
+
     private bool canBePicked = true;
     private bool floatActive = false;
     private float floatTimer = 0f;
     private Vector3 settledPosition;
+    private Coroutine warningMessageCoroutine;
 
     void Awake()
     {
@@ -69,6 +80,12 @@ public class ShardPickup : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
+        if (ShouldRequireEnemyClearBeforePickup() && AreLivingEnemiesRemaining())
+        {
+            ShowWarningMessage(defeatEnemiesFirstMessage);
+            return;
+        }
+
         // Ensure ShardManager exists before adding (silently ignore if missing)
         if (ShardManager.Instance == null)
             return;
@@ -93,9 +110,129 @@ public class ShardPickup : MonoBehaviour
 
         string sceneName = SceneManager.GetActiveScene().name;
         if (!sceneName.Equals("Floor5")) return;
+        if (AreLivingEnemiesRemaining()) return;
         if (string.IsNullOrWhiteSpace(finalSceneName)) return;
 
         SceneManager.LoadScene(finalSceneName);
+    }
+
+    private bool ShouldRequireEnemyClearBeforePickup()
+    {
+        if (!allowFinalSceneTransition)
+            return false;
+
+        return SceneManager.GetActiveScene().name.Equals("Floor5");
+    }
+
+    private bool AreLivingEnemiesRemaining()
+    {
+        var enemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
+        foreach (var enemy in enemies)
+        {
+            if (enemy == null)
+                continue;
+
+            if (!enemy.gameObject.activeInHierarchy)
+                continue;
+
+            if (!enemy.IsDead())
+                return true;
+        }
+
+        return false;
+    }
+
+    private void ShowWarningMessage(string text)
+    {
+        EnsureWarningMessageText();
+        if (warningMessageText == null)
+            return;
+
+        if (warningMessageCoroutine != null)
+            StopCoroutine(warningMessageCoroutine);
+
+        warningMessageCoroutine = StartCoroutine(ShowWarningMessageRoutine(text));
+    }
+
+    private IEnumerator ShowWarningMessageRoutine(string text)
+    {
+        warningMessageText.text = text;
+        warningMessageText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(warningMessageDuration);
+        warningMessageText.gameObject.SetActive(false);
+        warningMessageCoroutine = null;
+    }
+
+    private void EnsureWarningMessageText()
+    {
+        if (warningMessageText != null)
+            return;
+
+        var all = FindObjectsByType<TextMeshProUGUI>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var t in all)
+        {
+            if (t == null)
+                continue;
+
+            string name = t.name.ToLowerInvariant();
+            if (name.Contains("message") || name.Contains("warning") || name.Contains("notice") || name.Contains("alert"))
+            {
+                warningMessageText = t;
+                return;
+            }
+        }
+
+        warningMessageText = GetOrCreateRuntimeWarningText();
+    }
+
+    private TextMeshProUGUI GetOrCreateRuntimeWarningText()
+    {
+        const string canvasName = "Stage5ObjectiveMessageCanvas";
+        const string textName = "Stage5ObjectiveMessageText";
+
+        Canvas targetCanvas = null;
+        var existingCanvas = GameObject.Find(canvasName);
+        if (existingCanvas != null)
+            targetCanvas = existingCanvas.GetComponent<Canvas>();
+
+        if (targetCanvas == null)
+        {
+            var canvasGo = new GameObject(canvasName, typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            targetCanvas = canvasGo.GetComponent<Canvas>();
+            targetCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+            var scaler = canvasGo.GetComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            scaler.matchWidthOrHeight = 0.5f;
+        }
+
+        var existingText = targetCanvas.GetComponentsInChildren<TextMeshProUGUI>(true);
+        foreach (var text in existingText)
+        {
+            if (text != null && text.name == textName)
+                return text;
+        }
+
+        var textGo = new GameObject(textName, typeof(RectTransform), typeof(TextMeshProUGUI));
+        textGo.transform.SetParent(targetCanvas.transform, false);
+
+        var rect = textGo.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0.5f, 1f);
+        rect.anchorMax = new Vector2(0.5f, 1f);
+        rect.pivot = new Vector2(0.5f, 1f);
+        rect.anchoredPosition = new Vector2(0f, -120f);
+        rect.sizeDelta = new Vector2(1100f, 120f);
+
+        var tmp = textGo.GetComponent<TextMeshProUGUI>();
+        tmp.fontSize = 34f;
+        tmp.color = new Color(1f, 0.90f, 0.62f, 1f);
+        tmp.alignment = TextAlignmentOptions.Top;
+        tmp.raycastTarget = false;
+        tmp.textWrappingMode = TextWrappingModes.NoWrap;
+
+        textGo.SetActive(false);
+        return tmp;
     }
 
     private IEnumerator SpawnMotionRoutine()

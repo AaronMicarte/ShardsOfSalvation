@@ -284,6 +284,18 @@ MonoBehaviour:
   reinforcementDelay: 0.24
   reinforcementSpawner: {fileID: 0}
   reinforcementDebug: 0
+  dropShardOnDeath: 0
+  shardPickupPrefab: {fileID: 0}
+  shardDropOffset: {x: 0.35, y: 0}
+  dropBuffOnDeath: 0
+  buffPickupPrefab: {fileID: 0}
+  buffDropType: 0
+  buffStacksGranted: 1
+  buffDropOffset: {x: 0.35, y: 0}
+  isStage5FinalBoss: 0
+  muteBgmOnDeath: 1
+  bgmFadeOutDuration: 0.5
+  bgmSourcesToMute: []
   rangedProjectilePrefab: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   fireProjectileOnAttackEnd: 0

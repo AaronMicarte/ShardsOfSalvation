@@ -141,7 +141,7 @@ public class StageInstructionController : MonoBehaviour
 
     private float GetTopBannerDurationForScene(string sceneName)
     {
-        return 3.2f;
+        return 4.6f;
     }
 
     private void UpdateTopBannerFade()

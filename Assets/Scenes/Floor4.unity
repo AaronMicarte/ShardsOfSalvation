@@ -5932,7 +5932,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   target: {fileID: 2090439746}
   detectionRadius: 8
-  attackRange: 1.2
+  attackRange: 1.1
   moveSpeed: 2
   useFacingFlip: 1
   returnToStart: 1
@@ -5952,7 +5952,7 @@ MonoBehaviour:
   attackHitBoxSize: {x: 1.6, y: 0.8}
   lockMovementWhileAttacking: 1
   attackHitOffset: {x: 0.6, y: 0}
-  attackHitRadius: 1
+  attackHitRadius: 0.9
   attackTargetMask:
     serializedVersion: 2
     m_Bits: 0
@@ -8851,7 +8851,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   target: {fileID: 2090439746}
   detectionRadius: 8
-  attackRange: 1.2
+  attackRange: 1.1
   moveSpeed: 2
   useFacingFlip: 1
   returnToStart: 1
@@ -8871,7 +8871,7 @@ MonoBehaviour:
   attackHitBoxSize: {x: 1.6, y: 0.8}
   lockMovementWhileAttacking: 1
   attackHitOffset: {x: 0.6, y: 0}
-  attackHitRadius: 1
+  attackHitRadius: 0.9
   attackTargetMask:
     serializedVersion: 2
     m_Bits: 0
@@ -10331,19 +10331,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b0e9df214c696d41bf56b13f5c09c5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ReinforcementSpawner
-  enemyPrefab: {fileID: 8147393093777959939, guid: 56e25275d19adbc40b1dc6737871b8c6, type: 3}
+  enemyPrefab: {fileID: 8147393095304646951}
   spawnChance: 1
   spawnCount: 4
   spawnDelay: 0.6
   spawnRadius: 3
+  spawnedEnemyHP: 90
   groundMask:
     serializedVersion: 2
     m_Bits: 507
   groundRaycastDistance: 5
-  verticalSnapOffset: 0.02
-  spawnOverlapRadius: 0.12
+  verticalSnapOffset: 2.2
+  spawnOverlapRadius: 0
   maxOverlapResolveAttempts: 8
-  overlapResolveStepY: 0.15
+  overlapResolveStepY: 1
   enforceNonTriggerOnSpawn: 1
   debugLogging: 1
   maxActive: 4
@@ -10943,6 +10944,9 @@ MonoBehaviour:
   floatFrequency: 1.8
   allowFinalSceneTransition: 1
   finalSceneName: FinalScene
+  warningMessageText: {fileID: 0}
+  defeatEnemiesFirstMessage: Defeat all enemies first before claiming this shard
+  warningMessageDuration: 2
 --- !u!61 &820874184
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -12136,7 +12140,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   target: {fileID: 2090439746}
   detectionRadius: 8
-  attackRange: 1.2
+  attackRange: 1.1
   moveSpeed: 2
   useFacingFlip: 1
   returnToStart: 1
@@ -12156,7 +12160,7 @@ MonoBehaviour:
   attackHitBoxSize: {x: 1.6, y: 0.8}
   lockMovementWhileAttacking: 1
   attackHitOffset: {x: 0.6, y: 0}
-  attackHitRadius: 1
+  attackHitRadius: 0.9
   attackTargetMask:
     serializedVersion: 2
     m_Bits: 0
@@ -12868,7 +12872,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   target: {fileID: 2090439746}
   detectionRadius: 8
-  attackRange: 1.2
+  attackRange: 1.1
   moveSpeed: 2
   useFacingFlip: 1
   returnToStart: 1
@@ -12888,7 +12892,7 @@ MonoBehaviour:
   attackHitBoxSize: {x: 1.6, y: 0.8}
   lockMovementWhileAttacking: 1
   attackHitOffset: {x: 0.6, y: 0}
-  attackHitRadius: 1
+  attackHitRadius: 0.9
   attackTargetMask:
     serializedVersion: 2
     m_Bits: 0
@@ -14404,7 +14408,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   target: {fileID: 2090439746}
   detectionRadius: 8
-  attackRange: 1.2
+  attackRange: 1.1
   moveSpeed: 2
   useFacingFlip: 1
   returnToStart: 1
@@ -14424,7 +14428,7 @@ MonoBehaviour:
   attackHitBoxSize: {x: 1.6, y: 0.8}
   lockMovementWhileAttacking: 1
   attackHitOffset: {x: 0.6, y: 0}
-  attackHitRadius: 1
+  attackHitRadius: 0.9
   attackTargetMask:
     serializedVersion: 2
     m_Bits: 0
@@ -15086,7 +15090,7 @@ MonoBehaviour:
   attackStateBaseName: attack-
   singleAttackPerApproach: 0
   attackRecovery: 2.4
-  damageAmount: 1
+  damageAmount: 2
   maxAttackDuration: 0
   attackHitsOutOfRange: 0
   attackVariantConfigs: []
@@ -15671,7 +15675,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   target: {fileID: 2090439746}
   detectionRadius: 8
-  attackRange: 1.2
+  attackRange: 1.1
   moveSpeed: 2
   useFacingFlip: 1
   returnToStart: 1
@@ -15691,7 +15695,7 @@ MonoBehaviour:
   attackHitBoxSize: {x: 1.6, y: 0.8}
   lockMovementWhileAttacking: 1
   attackHitOffset: {x: 0.6, y: 0}
-  attackHitRadius: 1
+  attackHitRadius: 0.9
   attackTargetMask:
     serializedVersion: 2
     m_Bits: 0
@@ -21042,7 +21046,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   target: {fileID: 2090439746}
   detectionRadius: 8
-  attackRange: 1.2
+  attackRange: 1.1
   moveSpeed: 2
   useFacingFlip: 1
   returnToStart: 1
@@ -21062,7 +21066,7 @@ MonoBehaviour:
   attackHitBoxSize: {x: 1.6, y: 0.8}
   lockMovementWhileAttacking: 1
   attackHitOffset: {x: 0.6, y: 0}
-  attackHitRadius: 1
+  attackHitRadius: 0.9
   attackTargetMask:
     serializedVersion: 2
     m_Bits: 0
@@ -22313,6 +22317,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8108497054644426466, guid: 56e25275d19adbc40b1dc6737871b8c6, type: 3}
+      propertyPath: attackRange
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8108497054644426466, guid: 56e25275d19adbc40b1dc6737871b8c6, type: 3}
       propertyPath: audioSource
       value: 
       objectReference: {fileID: 1526840620}
@@ -22342,7 +22350,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8108497054644426466, guid: 56e25275d19adbc40b1dc6737871b8c6, type: 3}
       propertyPath: attackHitRadius
-      value: 1.4
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 8108497054644426466, guid: 56e25275d19adbc40b1dc6737871b8c6, type: 3}
       propertyPath: retreatDistance
@@ -22362,11 +22370,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8108497054644426466, guid: 56e25275d19adbc40b1dc6737871b8c6, type: 3}
       propertyPath: reinforcementCount
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8108497054644426466, guid: 56e25275d19adbc40b1dc6737871b8c6, type: 3}
       propertyPath: reinforcementDelay
-      value: 4
+      value: 0.9
       objectReference: {fileID: 0}
     - target: {fileID: 8108497054644426466, guid: 56e25275d19adbc40b1dc6737871b8c6, type: 3}
       propertyPath: dashSpeedMultiplier
@@ -25956,7 +25964,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   target: {fileID: 2090439746}
   detectionRadius: 8
-  attackRange: 1.2
+  attackRange: 1.1
   moveSpeed: 2
   useFacingFlip: 1
   returnToStart: 1
@@ -25976,7 +25984,7 @@ MonoBehaviour:
   attackHitBoxSize: {x: 1.6, y: 0.8}
   lockMovementWhileAttacking: 1
   attackHitOffset: {x: 0.6, y: 0}
-  attackHitRadius: 1
+  attackHitRadius: 0.9
   attackTargetMask:
     serializedVersion: 2
     m_Bits: 0
@@ -27870,7 +27878,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   target: {fileID: 2090439746}
   detectionRadius: 8
-  attackRange: 1.2
+  attackRange: 1.1
   moveSpeed: 2
   useFacingFlip: 1
   returnToStart: 1
@@ -27890,7 +27898,7 @@ MonoBehaviour:
   attackHitBoxSize: {x: 1.6, y: 0.8}
   lockMovementWhileAttacking: 1
   attackHitOffset: {x: 0.6, y: 0}
-  attackHitRadius: 1
+  attackHitRadius: 0.9
   attackTargetMask:
     serializedVersion: 2
     m_Bits: 0

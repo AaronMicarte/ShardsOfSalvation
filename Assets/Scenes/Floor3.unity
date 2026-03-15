@@ -15900,7 +15900,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   target: {fileID: 352744348}
   detectionRadius: 15
-  attackRange: 4.5
+  attackRange: 4.1
   moveSpeed: 2
   useFacingFlip: 1
   returnToStart: 1
@@ -26756,7 +26756,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   target: {fileID: 352744348}
   detectionRadius: 5
-  attackRange: 1.2
+  attackRange: 1
   moveSpeed: 2
   useFacingFlip: 1
   returnToStart: 1

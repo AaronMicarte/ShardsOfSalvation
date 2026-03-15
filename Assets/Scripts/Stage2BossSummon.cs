@@ -9,6 +9,8 @@ public class Stage2BossSummon : MonoBehaviour
     public int spawnCount = 10;
     public float spawnRadius = 3f;
     public float spawnDelay = 0.05f;
+    [Tooltip("HP assigned to each summoned mini boss.")]
+    public int summonedMiniBossHP = 4;
 
     [Tooltip("Vertical offset above ground to place spawned mini bosses")]
     public float verticalSnapOffset = 0.12f;
@@ -71,7 +73,7 @@ public class Stage2BossSummon : MonoBehaviour
             var e = go.GetComponent<Enemy>();
             if (e != null)
             {
-                e.InitializeSpawnHP(2);
+                e.InitializeSpawnHP(Mathf.Max(1, summonedMiniBossHP));
                 e.ResetForSpawn();
             }
 

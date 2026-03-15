@@ -1482,7 +1482,7 @@ public class Enemy : MonoBehaviour
         FinalSequenceState.MarkStage5BossDefeated();
 
         if (muteBgmOnDeath)
-            MuteStageMusicNow();
+            Stage5BgmMuteWatcher.RequestMuteWhenStageCleared(sceneName, GetStageBgmSources(), bgmFadeOutDuration);
     }
 
     private void MuteStageMusicNow()
@@ -1768,5 +1768,128 @@ public class Enemy : MonoBehaviour
                 Gizmos.DrawWireSphere(transform.position + (Vector3)offset, radius);
             }
         }
+    }
+}
+
+internal sealed class Stage5BgmMuteWatcher : MonoBehaviour
+{
+    private static Stage5BgmMuteWatcher instance;
+
+    private readonly System.Collections.Generic.List<AudioSource> bgmSources = new System.Collections.Generic.List<AudioSource>();
+    private string stageSceneName = "Floor5";
+    private float fadeOutDuration = 0.5f;
+    private bool waitingForClear;
+
+    public static void RequestMuteWhenStageCleared(string sceneName, AudioSource[] sources, float fadeDuration)
+    {
+        if (instance == null)
+        {
+            var go = new GameObject("Stage5BgmMuteWatcher");
+            instance = go.AddComponent<Stage5BgmMuteWatcher>();
+        }
+
+        instance.Configure(sceneName, sources, fadeDuration);
+    }
+
+    private void Configure(string sceneName, AudioSource[] sources, float fadeDuration)
+    {
+        stageSceneName = string.IsNullOrWhiteSpace(sceneName) ? "Floor5" : sceneName;
+        fadeOutDuration = Mathf.Max(0f, fadeDuration);
+        waitingForClear = true;
+
+        if (sources != null)
+        {
+            foreach (var src in sources)
+            {
+                if (src == null)
+                    continue;
+
+                if (!bgmSources.Contains(src))
+                    bgmSources.Add(src);
+            }
+        }
+    }
+
+    private void Update()
+    {
+        if (!waitingForClear)
+            return;
+
+        if (!SceneManager.GetActiveScene().name.Equals(stageSceneName))
+        {
+            waitingForClear = false;
+            Destroy(gameObject);
+            return;
+        }
+
+        if (AreLivingEnemiesRemaining())
+            return;
+
+        waitingForClear = false;
+        MuteConfiguredSources();
+        Destroy(gameObject);
+    }
+
+    private static bool AreLivingEnemiesRemaining()
+    {
+        var enemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
+        foreach (var enemy in enemies)
+        {
+            if (enemy == null)
+                continue;
+
+            if (enemy.gameObject == null || !enemy.gameObject.activeInHierarchy)
+                continue;
+
+            if (!enemy.IsDead())
+                return true;
+        }
+
+        return false;
+    }
+
+    private void MuteConfiguredSources()
+    {
+        if (bgmSources.Count == 0)
+            bgmSources.AddRange(GetLoopingSceneAudioSources());
+
+        foreach (var src in bgmSources)
+        {
+            if (src == null)
+                continue;
+
+            if (fadeOutDuration > 0f)
+            {
+                var helper = src.GetComponent<AudioSourceFadeHelper>();
+                if (helper == null)
+                    helper = src.gameObject.AddComponent<AudioSourceFadeHelper>();
+                helper.FadeOutAndStop(src, fadeOutDuration);
+            }
+            else
+            {
+                src.volume = 0f;
+                src.mute = true;
+                if (src.isPlaying)
+                    src.Stop();
+            }
+        }
+    }
+
+    private static AudioSource[] GetLoopingSceneAudioSources()
+    {
+        var allSources = FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
+        var looping = new System.Collections.Generic.List<AudioSource>();
+        foreach (var src in allSources)
+        {
+            if (src == null)
+                continue;
+
+            if (!src.loop)
+                continue;
+
+            looping.Add(src);
+        }
+
+        return looping.ToArray();
     }
 }

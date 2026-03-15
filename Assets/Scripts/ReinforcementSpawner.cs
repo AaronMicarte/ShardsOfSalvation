@@ -16,6 +16,8 @@ public class ReinforcementSpawner : MonoBehaviour
     public int spawnCount = 1;
     public float spawnDelay = 0.15f;
     public float spawnRadius = 1f;
+    [Tooltip("HP assigned to each spawned reinforcement enemy.")]
+    public int spawnedEnemyHP = 4;
 
     [Header("Spawn Safety")]
     [Tooltip("Layers considered ground for vertical snapping (leave default to use Physics2D default layers)")]
@@ -176,7 +178,7 @@ public class ReinforcementSpawner : MonoBehaviour
             var enemyComp = go.GetComponent<Enemy>();
             if (enemyComp != null)
             {
-                enemyComp.InitializeSpawnHP(2);
+                enemyComp.InitializeSpawnHP(Mathf.Max(1, spawnedEnemyHP));
                 enemyComp.ResetForSpawn();
 
                 // Face the player if possible (flip on X)

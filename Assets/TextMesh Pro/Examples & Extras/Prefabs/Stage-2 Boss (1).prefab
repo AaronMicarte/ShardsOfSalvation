@@ -204,7 +204,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   target: {fileID: 0}
   detectionRadius: 8
-  attackRange: 0.9
+  attackRange: 1.2
   moveSpeed: 2
   useFacingFlip: 1
   returnToStart: 0
@@ -224,7 +224,7 @@ MonoBehaviour:
   attackHitBoxSize: {x: 1.6, y: 0.8}
   lockMovementWhileAttacking: 1
   attackHitOffset: {x: 0.6, y: 0}
-  attackHitRadius: 0.3
+  attackHitRadius: 1
   attackTargetMask:
     serializedVersion: 2
     m_Bits: 64
@@ -287,6 +287,11 @@ MonoBehaviour:
   dropShardOnDeath: 0
   shardPickupPrefab: {fileID: 0}
   shardDropOffset: {x: 0.35, y: 0}
+  dropBuffOnDeath: 0
+  buffPickupPrefab: {fileID: 0}
+  buffDropType: 0
+  buffStacksGranted: 1
+  buffDropOffset: {x: 0.35, y: 0}
   isStage5FinalBoss: 0
   muteBgmOnDeath: 1
   bgmFadeOutDuration: 0.5

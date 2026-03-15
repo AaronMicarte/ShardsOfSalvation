@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class PortalTrigger : MonoBehaviour
@@ -58,31 +59,55 @@ public class PortalTrigger : MonoBehaviour
 
     private int CountRemainingEnemiesInArea()
     {
-        var enemies = GameObject.FindGameObjectsWithTag(enemyTag);
-        if (enemies == null || enemies.Length == 0) return 0;
-
         int count = 0;
-        foreach (var e in enemies)
+
+        // Prefer Enemy components to avoid relying on tags being perfectly configured.
+        var enemyComponents = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
+        var countedObjectIds = new HashSet<int>();
+        foreach (var enemy in enemyComponents)
         {
-            if (e == null || !e.activeInHierarchy) continue;
+            if (enemy == null || enemy.gameObject == null || !enemy.gameObject.activeInHierarchy)
+                continue;
 
             // If an area collider is assigned, skip enemies outside it
             if (areaCollider != null)
             {
-                if (!areaCollider.bounds.Contains(e.transform.position))
+                if (!areaCollider.bounds.Contains(enemy.transform.position))
                     continue;
             }
 
-            // Check Enemy.IsDead() if available
-            var enemyComp = e.GetComponent<Enemy>();
-            if (enemyComp != null)
-            {
-                if (!enemyComp.IsDead()) count++;
-                continue;
-            }
+            countedObjectIds.Add(enemy.gameObject.GetInstanceID());
+            if (!enemy.IsDead())
+                count++;
+        }
 
-            // No Enemy component: treat active object as alive
-            count++;
+        // Fallback: also include tagged objects with no Enemy component.
+        if (string.IsNullOrWhiteSpace(enemyTag))
+            return count;
+
+        try
+        {
+            var taggedEnemies = GameObject.FindGameObjectsWithTag(enemyTag);
+            if (taggedEnemies == null || taggedEnemies.Length == 0)
+                return count;
+
+            foreach (var e in taggedEnemies)
+            {
+                if (e == null || !e.activeInHierarchy)
+                    continue;
+
+                if (countedObjectIds.Contains(e.GetInstanceID()))
+                    continue;
+
+                if (areaCollider != null && !areaCollider.bounds.Contains(e.transform.position))
+                    continue;
+
+                count++;
+            }
+        }
+        catch (UnityException)
+        {
+            // Tag not defined; component-based count above is sufficient.
         }
 
         return count;
