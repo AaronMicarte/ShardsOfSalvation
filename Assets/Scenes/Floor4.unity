@@ -13591,7 +13591,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 5
   m_MaskInteraction: 0
   m_Sprite: {fileID: -5005990984189769374, guid: b562de6f05f9d3243a467416e2806040, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -17962,12 +17962,12 @@ MonoBehaviour:
   reinforcementDebug: 0
   dropShardOnDeath: 1
   shardPickupPrefab: {fileID: 820874181}
-  shardDropOffset: {x: 0.1, y: 0}
+  shardDropOffset: {x: 0, y: 0}
   dropBuffOnDeath: 1
   buffPickupPrefab: {fileID: 6724670659867803009, guid: 0b050400190b12445b06d8150c797c2f, type: 3}
   buffDropType: 1
   buffStacksGranted: 1
-  buffDropOffset: {x: 0.1, y: 0}
+  buffDropOffset: {x: 0, y: 0}
   isStage5FinalBoss: 0
   muteBgmOnDeath: 1
   bgmFadeOutDuration: 0.5
@@ -35625,8 +35625,8 @@ MonoBehaviour:
   enableRageMode: 1
   rageStartTriggerParam: RageStart
   rageBoolParam: Raging
-  rageDuration: 10
-  rageCooldown: 12
+  rageDuration: 12.25
+  rageCooldown: 9.25
   rageClip: {fileID: 8300000, guid: 6318a4ad568ae5c4bb566ad932e12f72, type: 3}
   rageVolume: 1
   rageSoundMaxDuration: 1

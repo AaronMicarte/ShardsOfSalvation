@@ -70,6 +70,21 @@ public class StageInstructionController : MonoBehaviour
     {
         UpdateTopBannerFade();
 
+        // Allow closing the Stage 4 briefing popup via keyboard (spacebar) in addition to clicking.
+        if (stage4Panel != null && stage4Panel.activeSelf)
+        {
+            bool closeRequested = false;
+#if ENABLE_INPUT_SYSTEM
+            closeRequested = closeRequested || (UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.spaceKey.wasPressedThisFrame);
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
+            closeRequested = closeRequested || Input.GetKeyDown(KeyCode.Space);
+#endif
+            if (closeRequested)
+                CloseStage4Popup();
+            return;
+        }
+
         string sceneName = SceneManager.GetActiveScene().name;
         if (!sceneName.Equals("Floor4"))
             return;

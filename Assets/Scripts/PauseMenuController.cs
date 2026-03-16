@@ -96,6 +96,23 @@ public class PauseMenuController : MonoBehaviour
         if (IsPlayerDead())
             return;
 
+        // Allow 'P' to directly show the controls page, even if pause menu is closed.
+        // If the controls page is visible, allow spacebar to act as "back".
+        if (isOpen && controlsContentRoot != null && controlsContentRoot.activeSelf && WasSpacePressedThisFrame())
+        {
+            SetControlsPageVisible(false);
+            return;
+        }
+
+        if (WasPPressedThisFrame())
+        {
+            if (!isOpen)
+                OpenMenu();
+
+            SetControlsPageVisible(true);
+            return;
+        }
+
         if (!WasEscapePressedThisFrame())
             return;
 
@@ -113,6 +130,32 @@ public class PauseMenuController : MonoBehaviour
 #endif
 #if ENABLE_LEGACY_INPUT_MANAGER
         if (Input.GetKeyDown(KeyCode.Escape))
+            return true;
+#endif
+        return false;
+    }
+
+    private bool WasPPressedThisFrame()
+    {
+#if ENABLE_INPUT_SYSTEM
+        if (Keyboard.current != null && Keyboard.current.pKey.wasPressedThisFrame)
+            return true;
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
+        if (Input.GetKeyDown(KeyCode.P))
+            return true;
+#endif
+        return false;
+    }
+
+    private bool WasSpacePressedThisFrame()
+    {
+#if ENABLE_INPUT_SYSTEM
+        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+            return true;
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
+        if (Input.GetKeyDown(KeyCode.Space))
             return true;
 #endif
         return false;

@@ -1452,7 +1452,7 @@ GameObject:
   - component: {fileID: 124616872}
   - component: {fileID: 124616871}
   - component: {fileID: 124616874}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: concrate-2_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7163,7 +7163,7 @@ Transform:
   m_GameObject: {fileID: 668497734}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 58.63, y: 0.87, z: 0}
+  m_LocalPosition: {x: 59.81, y: 0.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7389,7 +7389,7 @@ MonoBehaviour:
     m_Bits: 8
   aggroDuration: 3
   damageTakenMultiplier: 1
-  armor: 9
+  armor: 8
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -7397,7 +7397,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 222
+  maxHealth: 1
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -9661,7 +9661,7 @@ MonoBehaviour:
     m_Bits: 8
   aggroDuration: 3
   damageTakenMultiplier: 1
-  armor: 9
+  armor: 8
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -9669,7 +9669,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 222
+  maxHealth: 1
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -13057,7 +13057,7 @@ MonoBehaviour:
     m_Bits: 8
   aggroDuration: 3
   damageTakenMultiplier: 1
-  armor: 9
+  armor: 8
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -13065,7 +13065,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 222
+  maxHealth: 1
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -14929,7 +14929,7 @@ MonoBehaviour:
     m_Bits: 8
   aggroDuration: 3
   damageTakenMultiplier: 1
-  armor: 9
+  armor: 8
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -14937,7 +14937,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 222
+  maxHealth: 1
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -15867,7 +15867,7 @@ MonoBehaviour:
     m_Bits: 0
   aggroDuration: 3
   damageTakenMultiplier: 1
-  armor: 20
+  armor: 21
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -15905,12 +15905,12 @@ MonoBehaviour:
   reinforcementDebug: 0
   dropShardOnDeath: 1
   shardPickupPrefab: {fileID: 1910965105}
-  shardDropOffset: {x: 0.1, y: 0}
+  shardDropOffset: {x: 0, y: 0}
   dropBuffOnDeath: 0
   buffPickupPrefab: {fileID: 6724670659867803009, guid: 0b050400190b12445b06d8150c797c2f, type: 3}
   buffDropType: 1
   buffStacksGranted: 1
-  buffDropOffset: {x: 0.1, y: 0}
+  buffDropOffset: {x: 0, y: 0}
   isStage5FinalBoss: 0
   muteBgmOnDeath: 1
   bgmFadeOutDuration: 0.5
@@ -16778,7 +16778,7 @@ MonoBehaviour:
     m_Bits: 8
   aggroDuration: 3
   damageTakenMultiplier: 1
-  armor: 9
+  armor: 8
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -16786,7 +16786,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 222
+  maxHealth: 1
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -17091,7 +17091,7 @@ MonoBehaviour:
     m_Bits: 8
   aggroDuration: 3
   damageTakenMultiplier: 1
-  armor: 9
+  armor: 8
   canBeCrit: 1
   onAttackHit:
     m_PersistentCalls:
@@ -17099,7 +17099,7 @@ MonoBehaviour:
   onAttackEnd:
     m_PersistentCalls:
       m_Calls: []
-  maxHealth: 222
+  maxHealth: 1
   deathVFX: {fileID: 0}
   deathClip: {fileID: 0}
   deathVolume: 1
@@ -19887,8 +19887,8 @@ MonoBehaviour:
   enableRageMode: 1
   rageStartTriggerParam: RageStart
   rageBoolParam: Raging
-  rageDuration: 10
-  rageCooldown: 12
+  rageDuration: 12.25
+  rageCooldown: 9.25
   rageClip: {fileID: 8300000, guid: 6318a4ad568ae5c4bb566ad932e12f72, type: 3}
   rageVolume: 1
   rageSoundMaxDuration: 1

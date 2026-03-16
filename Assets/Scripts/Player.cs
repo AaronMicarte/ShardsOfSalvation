@@ -30,8 +30,8 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("Enable/disable rage mode features globally for this player")] private bool enableRageMode = true;
     [SerializeField, Tooltip("Animator trigger used to enter rage mode once (prevents AnyState re-entry loops)")] private string rageStartTriggerParam = "RageStart";
     [SerializeField, Tooltip("Animator bool parameter used to switch into rage animation graph")] private string rageBoolParam = "Raging";
-    [SerializeField, Tooltip("Default rage duration in seconds when StartRageMode() is used")] private float rageDuration = 10f;
-    [SerializeField, Tooltip("Cooldown in seconds before rage can be activated again after it ends")] private float rageCooldown = 12f;
+    [SerializeField, Tooltip("Default rage duration in seconds when StartRageMode() is used")] private float rageDuration = 12.25f;
+    [SerializeField, Tooltip("Cooldown in seconds before rage can be activated again after it ends")] private float rageCooldown = 9.25f;
     [Space, Header("Rage Audio")]
     [SerializeField, Tooltip("Optional clip to play when rage starts")] private AudioClip rageClip = null;
     [SerializeField, Range(0f, 1f), Tooltip("Volume at which to play the rage clip")] private float rageVolume = 1f;
@@ -205,7 +205,7 @@ public class Player : MonoBehaviour
     // --- Skill1 (configurable animation-based skill) ---
     [SerializeField, Tooltip("Animator trigger name used to start Skill1 (optional)")] private string skill1Trigger = "Skill1";
     [SerializeField, Tooltip("Duration (s) to lock movement during Skill1 (0 = wait for animator). Default: 0.7s")] private float skill1Duration = 0.7f;
-    [SerializeField, Tooltip("Seconds between allowed Skill1 uses (cooldown). Default: 1s")] private float skill1Cooldown = 1f;
+    [SerializeField, Tooltip("Seconds between allowed Skill1 uses (cooldown). Default: 1s")] private float skill1Cooldown = 1.6f;
 
     [Header("Combat Events")]
     [SerializeField] private UnityEvent onAttackHit;
@@ -481,7 +481,8 @@ public class Player : MonoBehaviour
         damagePopupColor = new Color(1f, 1f, 1f, 1f);
 
         rageHeavyDamageReactionCooldown = 1.8f;
-        rageCooldown = 12f;
+        rageDuration = 12.25f;
+        rageCooldown = 9.25f;
     }
 
     private IEnumerator RageTimerRoutine()
