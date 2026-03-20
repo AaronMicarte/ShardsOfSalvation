@@ -113,6 +113,16 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("Radius used to detect enemies for Skill1 hit")] private float skill1HitRadius = 0.8f;
     [SerializeField, Tooltip("Offset from player pivot where Skill1 is centered (local space)")] private Vector2 skill1HitOffset = new Vector2(0.6f, 0f);
 
+    [Header("Airborne Attack Bonus")]
+    [SerializeField, Tooltip("When enabled, attacking while airborne gains a modest damage bonus")]
+    private bool enableAirborneAttackBonus = true;
+    [SerializeField, Range(0f, 0.35f), Tooltip("Extra basic-attack damage while airborne (0.12 = +12%)")]
+    private float airborneAttackBonusPercent = 0.12f;
+    [SerializeField, Range(0f, 0.35f), Tooltip("Extra Skill1 damage while airborne (0.08 = +8%)")]
+    private float airborneSkill1BonusPercent = 0.08f;
+    [SerializeField, Tooltip("If true, airborne bonus also affects percent-based basic attacks (usually keep off for balance)")]
+    private bool airborneBonusAffectsPercentAttack = false;
+
     [Header("Rage Heavy Damage Combat")]
     [SerializeField, Tooltip("Minimum damage dealt by rage heavy-damage hit. Runtime enforces this stays above Skill1 damage.")]
     private int rageHeavyDamageDamage = 32;
@@ -452,6 +462,11 @@ public class Player : MonoBehaviour
         skill1HitRadius = 0.8f;
         skill1HitOffset = new Vector2(0.6f, 0f);
 
+        enableAirborneAttackBonus = true;
+        airborneAttackBonusPercent = 0.12f;
+        airborneSkill1BonusPercent = 0.08f;
+        airborneBonusAffectsPercentAttack = false;
+
         rageMoveSpeedMultiplier = 1.35f;
         rageDamageMultiplier = 1.5f;
         rageCritChanceMultiplier = 1.5f;
@@ -636,6 +651,8 @@ public class Player : MonoBehaviour
         critDamageBuffPerStack = Mathf.Max(0f, critDamageBuffPerStack);
         maxTotalCritDamageBuff = Mathf.Max(0f, maxTotalCritDamageBuff);
         maxCritDamageBuffStacks = Mathf.Max(1, maxCritDamageBuffStacks);
+        airborneAttackBonusPercent = Mathf.Clamp(airborneAttackBonusPercent, 0f, 0.35f);
+        airborneSkill1BonusPercent = Mathf.Clamp(airborneSkill1BonusPercent, 0f, 0.35f);
     }
 #endif
 
@@ -1102,12 +1119,15 @@ public class Player : MonoBehaviour
         int rolledBaseDamage = RollDamageRange(attackDamage, attackDamageMax);
         float rageMult = isRaging ? Mathf.Max(0f, rageDamageMultiplier) : 1f;
         float buffMult = 1f + GetDamageBuffBonusMultiplier();
-        return Mathf.Max(1, Mathf.RoundToInt(rolledBaseDamage * rageMult * buffMult));
+        float airMult = GetAirborneBasicAttackMultiplier();
+        return Mathf.Max(1, Mathf.RoundToInt(rolledBaseDamage * rageMult * buffMult * airMult));
     }
 
     private float GetEffectiveAttackPercent()
     {
         float m = isRaging ? Mathf.Max(0f, rageDamageMultiplier) : 1f;
+        if (airborneBonusAffectsPercentAttack)
+            m *= GetAirborneBasicAttackMultiplier();
         return attackPercent * m;
     }
 
@@ -1128,7 +1148,20 @@ public class Player : MonoBehaviour
         int rolledBaseDamage = RollDamageRange(skill1Damage, skill1DamageMax);
         float rageMult = isRaging ? Mathf.Max(0f, rageDamageMultiplier) : 1f;
         float buffMult = 1f + GetDamageBuffBonusMultiplier();
-        return Mathf.Max(1, Mathf.RoundToInt(rolledBaseDamage * rageMult * buffMult));
+        float airMult = GetAirborneSkill1Multiplier();
+        return Mathf.Max(1, Mathf.RoundToInt(rolledBaseDamage * rageMult * buffMult * airMult));
+    }
+
+    private float GetAirborneBasicAttackMultiplier()
+    {
+        if (!enableAirborneAttackBonus || isGrounded) return 1f;
+        return 1f + Mathf.Max(0f, airborneAttackBonusPercent);
+    }
+
+    private float GetAirborneSkill1Multiplier()
+    {
+        if (!enableAirborneAttackBonus || isGrounded) return 1f;
+        return 1f + Mathf.Max(0f, airborneSkill1BonusPercent);
     }
 
     private float GetEffectiveSkill1CritChance()
